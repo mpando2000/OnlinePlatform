@@ -446,6 +446,8 @@ public function addUser(Request $request) {
 
 
 public function viewUser(User $user){
+    $user->loadMissing(['school', 'schoolClass', 'subjects']);
+
     // Manually load school relationship for this user
     if ($user->school_id) {
         $user->schoolModel = \App\Models\School::find($user->school_id);
@@ -458,24 +460,41 @@ public function viewUser(User $user){
 }
 
 public function editForm(User $user){
+    $schools = \App\Models\School::orderBy('name')->get();
+    $school_classes = SchoolClass::orderBy('name')->get();
+
     return view('teacher.editUser', [
-        'user' =>$user]);
+        'user' => $user,
+        'schools' => $schools,
+        'school_classes' => $school_classes,
+    ]);
 }
 
 public function updatedUser(User $user, Request $request){
-   // dd($request-> all());
-    $formData = $request ->validate([
-        'name' => 'required',
-        'email' => 'required',
-        'school'=>'required',
-        'role' => 'required',
-        'class_id'=>'required|exists:school_classes,id',
-        
+    $formData = $request->validate([
+        'firstname' => 'required|string|max:255',
+        'secondname' => 'nullable|string|max:255',
+        'lastname' => 'required|string|max:255',
+        'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+        'gender' => 'required|string|max:50',
+        'role' => 'required|in:teacher,student',
+        'school_id' => 'nullable|exists:schools,id',
+        'school' => 'nullable|string|max:255',
+        'class_id' => 'nullable|required_if:role,student|exists:school_classes,id',
     ]);
+
+    if ($formData['role'] !== 'student') {
+        $formData['class_id'] = null;
+    }
+
+    if (!empty($formData['school_id'])) {
+        $school = \App\Models\School::find($formData['school_id']);
+        $formData['school'] = $school ? $school->name : ($formData['school'] ?? null);
+    }
 
     $user->update($formData);
     
-    return redirect(route('teacher.users'));
+    return redirect('/teacher/viewUser/' . $user->id)->with('success', 'User updated successfully.');
 
 }
 public function destroy(User $user){
@@ -487,4 +506,3 @@ public function destroy(User $user){
 
 }
     
-

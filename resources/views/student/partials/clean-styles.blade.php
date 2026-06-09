@@ -32,6 +32,7 @@
 .ui-btn-primary { background: #123d35; color: #fff; }
 .ui-btn-primary:hover { background: #1f6f5b; color: #fff; }
 .ui-btn-light { background: #eef2f7; color: #374151; }
+.ui-btn-light:hover { background: #e2e8f0; color: #172033; }
 .count-pill { background: #ecfdf5; border-radius: 999px; color: #047857; font-size: 12px; font-weight: 800; padding: 6px 10px; }
 .stats-grid { display: grid; gap: 14px; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-bottom: 14px; }
 .stat-card { align-items: center; display: flex; gap: 12px; min-height: 82px; padding: 14px; }
@@ -67,7 +68,20 @@
 .item-list { display: grid; gap: 10px; padding: 16px; }
 .list-card { justify-content: space-between; }
 .row-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; }
+.assignment-row { align-items: center; }
+.list-main { flex: 1 1 260px; min-width: 0; }
+.assignment-meta { align-items: flex-end; display: flex; flex-direction: column; gap: 5px; margin-left: auto; }
+.assignment-meta small { color: #6b7280; font-size: 12px; font-weight: 800; }
+.status-pill { background: #ecfdf5; border-radius: 999px; color: #047857; display: inline-block; font-size: 12px; font-weight: 800; padding: 5px 9px; }
+.status-pill.warning { background: #fffbeb; color: #b45309; }
+.status-pill.danger { background: #fef2f2; color: #b91c1c; }
 .form-card { padding: 18px; }
+.detail-layout { display: grid; gap: 14px; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); }
+.detail-list { display: grid; gap: 10px; }
+.detail-row { align-items: center; background: #f8fafc; border: 1px solid #eef2f7; border-radius: 8px; display: flex; gap: 14px; justify-content: space-between; padding: 12px; }
+.detail-row span { color: #6b7280; font-size: 12px; font-weight: 800; text-transform: uppercase; }
+.detail-row strong { color: #172033; text-align: right; }
+.description-box { color: #374151; line-height: 1.6; padding: 16px 0 4px; }
 .field { margin-bottom: 14px; position: relative; }
 .field label { color: #374151; display: block; font-weight: 800; margin-bottom: 7px; }
 .field input, .field textarea {
@@ -79,6 +93,7 @@
 }
 .field textarea { resize: vertical; }
 .field input:focus, .field textarea:focus { border-color: #123d35; box-shadow: 0 0 0 3px rgba(18, 61, 53, .12); outline: 0; }
+.field-help { color: #6b7280; display: block; font-size: 12px; margin-top: 6px; }
 .password-field input { padding-right: 44px; }
 .password-field button { background: transparent; border: 0; bottom: 6px; color: #6b7280; position: absolute; right: 8px; width: 32px; }
 .form-actions { display: flex; gap: 8px; margin-top: 18px; }
@@ -95,13 +110,19 @@
 .message-body p { color: #172033; margin: 0; white-space: pre-wrap; }
 .composer-card form { padding: 16px; }
 .live-status { color: #047857; font-size: 12px; font-weight: 800; margin-top: 10px; }
+.panel-alert { border-radius: 8px; margin-bottom: 14px; }
 .empty-state { color: #6b7280; padding: 20px; text-align: center; }
-@media (max-width: 1050px) { .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .blog-layout { grid-template-columns: 1fr; } }
+.empty-state h3 { color: #172033; font-size: 17px; font-weight: 800; margin: 8px 0 4px; }
+@media (max-width: 1050px) { .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .blog-layout, .detail-layout { grid-template-columns: 1fr; } }
 @media (max-width: 780px) {
     .page-panel { align-items: flex-start; flex-direction: column; }
     .stats-grid { grid-template-columns: 1fr; }
-    .list-card { align-items: flex-start; flex-direction: column; }
-    .row-actions { margin-left: 0; }
+    .list-card, .detail-row { align-items: flex-start; flex-direction: column; }
+    .row-actions, .assignment-meta { align-items: flex-start; margin-left: 0; }
+    .detail-row strong { text-align: left; }
 }
 </style>
-<script>document.getElementById("currentYear").textContent = new Date().getFullYear();</script>
+<script>
+const studentFooterYear = document.getElementById("currentYear");
+if (studentFooterYear) studentFooterYear.textContent = new Date().getFullYear();
+</script>

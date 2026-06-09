@@ -37,9 +37,14 @@
                                     <td>{{ optional($submission->submitted_at)->format('M d, Y h:i A') ?? $submission->created_at->diffForHumans() }}</td>
                                     <td><span class="status-pill">{{ $submission->grade ? $submission->grade . '%' : 'Pending' }}</span></td>
                                     <td>
-                                        <a href="{{ route('submission.download', $submission->id) }}" class="icon-btn" title="Download submission">
-                                            <i class="fas fa-download"></i>
-                                        </a>
+                                        <div class="row-actions">
+                                            <a href="{{ route('submission.show', $submission->id) }}" target="_blank" class="icon-btn" title="View submission">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{{ route('submission.download', $submission->id) }}" class="icon-btn" title="Download submission">
+                                                <i class="fas fa-download"></i>
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
