@@ -30,9 +30,14 @@ class ReportController extends Controller
 
 
     public function classReport(){
-        $classes = SchoolClass::all();
+        $classes = SchoolClass::withCount('subjects')->get();
+        $subjectCount = \App\Models\Subject::count();
+        $studentCount = User::where('role', 'student')->count();
+
         return view ('admin.classReport', [
-            'classes' => $classes
+            'classes' => $classes,
+            'subjectCount' => $subjectCount,
+            'studentCount' => $studentCount,
         ]);
     }
 
@@ -67,9 +72,14 @@ class ReportController extends Controller
     }
 
     public function teacherClassReport(){
-        $classes = SchoolClass::all();
+        $classes = SchoolClass::withCount('subjects')->get();
+        $subjectCount = \App\Models\Subject::count();
+        $studentCount = User::where('role', 'student')->count();
+
         return view ('teacher.classReport', [
-            'classes' => $classes
+            'classes' => $classes,
+            'subjectCount' => $subjectCount,
+            'studentCount' => $studentCount,
         ]);
     }
 
