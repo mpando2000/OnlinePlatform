@@ -13,55 +13,67 @@
             </a>
         </div>
 
-        <section class="panel-card table-card">
-            <div class="table-responsive">
-                <table class="clean-table">
-                    <thead>
-                        <tr>
-                            <th>Assignment</th>
-                            <th>Student</th>
-                            <th>Submitted</th>
-                            <th>Grade</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($assignmentsWithSubmissions as $assignment)
-                            @forelse($assignment->submissions as $submission)
-                                @php
-                                    $studentName = trim(($submission->student->firstname ?? '') . ' ' . ($submission->student->lastname ?? '')) ?: ($submission->student->name ?? 'Student');
-                                @endphp
+        <div class="activity-stack">
+            @forelse($assignmentsWithSubmissions as $assignment)
+                <section class="panel-card table-card activity-panel">
+                    <div class="panel-title activity-title">
+                        <div>
+                            <strong>{{ $assignment->title }}</strong>
+                            <span>
+                                {{ optional($assignment->schoolClass)->name ?? 'Class N/A' }}
+                                @if($assignment->submission_deadline)
+                                    · Deadline {{ $assignment->submission_deadline->format('M d, Y') }}
+                                @endif
+                            </span>
+                        </div>
+                        <span class="count-pill">{{ $assignment->submissions->count() }} submissions</span>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="clean-table">
+                            <thead>
                                 <tr>
-                                    <td>{{ $assignment->title }}</td>
-                                    <td>{{ $studentName }}</td>
-                                    <td>{{ optional($submission->submitted_at)->format('M d, Y h:i A') ?? $submission->created_at->diffForHumans() }}</td>
-                                    <td><span class="status-pill">{{ $submission->grade ? $submission->grade . '%' : 'Pending' }}</span></td>
-                                    <td>
-                                        <div class="row-actions">
-                                            <a href="{{ route('submission.show', $submission->id) }}" target="_blank" class="icon-btn" title="View submission">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            <a href="{{ route('submission.download', $submission->id) }}" class="icon-btn" title="Download submission">
-                                                <i class="fas fa-download"></i>
-                                            </a>
-                                        </div>
-                                    </td>
+                                    <th>Student</th>
+                                    <th>Submitted</th>
+                                    <th>Grade</th>
+                                    <th class="text-right">Actions</th>
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td>{{ $assignment->title }}</td>
-                                    <td colspan="4" class="empty-cell">No submissions yet.</td>
-                                </tr>
-                            @endforelse
-                        @empty
-                            <tr>
-                                <td colspan="5" class="empty-cell">No assignments found.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </section>
+                            </thead>
+                            <tbody>
+                                @forelse($assignment->submissions as $submission)
+                                    @php
+                                        $studentName = trim(($submission->student->firstname ?? '') . ' ' . ($submission->student->lastname ?? '')) ?: ($submission->student->name ?? 'Student');
+                                    @endphp
+                                    <tr>
+                                        <td><strong>{{ $studentName }}</strong><span>{{ optional($submission->student)->email ?? 'No email' }}</span></td>
+                                        <td>{{ optional($submission->submitted_at)->format('M d, Y h:i A') ?? $submission->created_at->diffForHumans() }}</td>
+                                        <td><span class="status-pill">{{ $submission->grade ? $submission->grade . '%' : 'Pending' }}</span></td>
+                                        <td>
+                                            <div class="row-actions">
+                                                <a href="{{ route('submission.show', $submission->id) }}" target="_blank" class="icon-btn" title="View submission">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="{{ route('submission.download', $submission->id) }}" class="icon-btn" title="Download submission">
+                                                    <i class="fas fa-download"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr><td colspan="4" class="empty-cell">No submissions yet for this activity.</td></tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            @empty
+                <section class="panel-card empty-state">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>No activities found</h3>
+                    <p>Your assignments will appear here when created.</p>
+                </section>
+            @endforelse
+        </div>
     </div>
 </div>
 

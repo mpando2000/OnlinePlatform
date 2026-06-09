@@ -18,42 +18,58 @@
             </div>
         </div>
 
-        <section class="item-grid">
-            @forelse($materials as $material)
-                <article class="panel-card item-card material-item">
-                    <div class="item-icon">
-                        <i class="fas fa-{{ $material->type === 'video' ? 'play-circle' : ($material->type === 'link' ? 'link' : 'file-alt') }}"></i>
-                    </div>
-                    <div>
-                        <h3>{{ $material->title }}</h3>
-                        <p>{{ ucfirst($material->type) }} • {{ $material->created_at->diffForHumans() }}</p>
-                    </div>
-                    <div class="item-actions">
-                        <a href="{{ route('material.show', $material->id) }}" class="icon-btn" title="View material">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                        <a href="{{ route('material.download', $material->id) }}" class="icon-btn" title="Open material">
-                            <i class="fas fa-external-link-alt"></i>
-                        </a>
-                        <form action="{{ route('material.delete', $material->id) }}" method="POST" onsubmit="return confirm('Delete this material?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="icon-btn danger" title="Delete material">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </form>
-                    </div>
-                </article>
-            @empty
-                <section class="panel-card empty-state">
-                    <i class="fas fa-folder-open"></i>
-                    <h3>No materials yet</h3>
-                    <p>Add the first material for this subject.</p>
-                    <a href="{{ route('teacherMaterials.upload', ['class' => $class->id, 'subject' => $subject->id]) }}" class="ui-btn ui-btn-primary">
-                        <i class="fas fa-plus"></i> Add Material
-                    </a>
-                </section>
-            @endforelse
+        <section class="panel-card table-card">
+            <div class="panel-title">
+                <strong>Material List</strong>
+                <span>{{ $materials->count() }} materials</span>
+            </div>
+            <div class="table-responsive">
+                <table class="clean-table">
+                    <thead>
+                        <tr>
+                            <th>Material</th>
+                            <th>Type</th>
+                            <th>Uploaded</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($materials as $material)
+                            <tr>
+                                <td>
+                                    <strong>{{ $material->title }}</strong>
+                                    <span>{{ optional($material->subject)->name ?? $subject->name }}</span>
+                                </td>
+                                <td>{{ ucfirst($material->type) }}</td>
+                                <td>{{ $material->created_at->format('M d, Y') }}<span>{{ $material->created_at->diffForHumans() }}</span></td>
+                                <td>
+                                    <div class="row-actions">
+                                        <a href="{{ route('material.show', $material->id) }}" class="icon-btn" title="View material">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ route('material.view', $material->id) }}" target="_blank" class="icon-btn" title="View material document">
+                                            <i class="fas fa-external-link-alt"></i>
+                                        </a>
+                                        <form action="{{ route('material.delete', $material->id) }}" method="POST" onsubmit="return confirm('Delete this material?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="icon-btn danger" title="Delete material">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="empty-cell">
+                                    No materials yet. Add the first material for this subject.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </section>
     </div>
 </div>

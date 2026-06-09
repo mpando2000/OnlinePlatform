@@ -10,7 +10,7 @@
             </div>
             <div class="page-actions">
                 <a href="{{ route('teacher.assignment.open', $assignment->id) }}" target="_blank" class="ui-btn ui-btn-primary">
-                    <i class="fas fa-file-download"></i> Open File
+                    <i class="fas fa-eye"></i> View Document
                 </a>
                 <a href="{{ route('teacher.assignments') }}" class="ui-btn ui-btn-soft">
                     <i class="fas fa-arrow-left"></i> Assignments
@@ -34,6 +34,11 @@
                     <span>Description</span>
                     <strong>{{ $assignment->description ?: 'No description provided' }}</strong>
                 </div>
+            </div>
+            <div class="form-actions">
+                <a href="{{ route('teacher.assignment.open', $assignment->id) }}" target="_blank" class="ui-btn ui-btn-primary">
+                    <i class="fas fa-eye"></i> View Assignment Document
+                </a>
             </div>
         </section>
 
@@ -61,9 +66,14 @@
                                 <td>{{ optional($submission->submitted_at)->format('M d, Y h:i A') ?? $submission->created_at->diffForHumans() }}</td>
                                 <td><span class="status-pill">{{ $submission->grade ? $submission->grade . '%' : 'Pending' }}</span></td>
                                 <td>
-                                    <a href="{{ route('submission.download', $submission->id) }}" class="icon-btn" title="Download submission">
-                                        <i class="fas fa-download"></i>
-                                    </a>
+                                    <div class="row-actions">
+                                        <a href="{{ route('submission.show', $submission->id) }}" target="_blank" class="icon-btn" title="View submission">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ route('submission.download', $submission->id) }}" class="icon-btn" title="Download submission">
+                                            <i class="fas fa-download"></i>
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         @empty

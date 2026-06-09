@@ -48,6 +48,9 @@
 .panel-title, .card-heading { align-items: center; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; padding: 13px 16px; }
 .panel-title strong, .card-heading h2 { color: #172033; font-size: 15px; font-weight: 800; margin: 0; }
 .panel-title span { color: #6b7280; font-size: 12px; font-weight: 800; }
+.activity-stack { display: grid; gap: 14px; }
+.activity-title { gap: 12px; }
+.activity-title > div span { display: block; margin-top: 3px; }
 .table-responsive { overflow-x: auto; }
 .clean-table { margin: 0; width: 100%; }
 .clean-table th { background: #f8fafc; color: #4b5563; font-size: 12px; padding: 12px 16px; text-transform: uppercase; }

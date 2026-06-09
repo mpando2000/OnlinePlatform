@@ -179,6 +179,7 @@ Route::middleware(['auth','role:teacher'])->group(function (){
     Route::get('/class/{class}/subject/{subject}/materials/upload', [TeacherController::class, 'materialForm'])->name('teacherMaterials.upload');
     Route::post('/class/{class}/subject/{subject}/materials/upload', [TeacherController::class, 'addMaterial'])->name('teacherMaterials.store');
     Route::get('/showMaterial/{material}',[TeacherController::class, 'showMaterial'])->name('material.show');
+    Route::get('/viewMaterial/{material}', [TeacherController::class, 'viewMaterialFile'])->name('material.view');
     Route::get('/downloadMaterial/{material}', [TeacherController::class, 'downloadMaterial'])->name('material.download');
     Route::delete('/deleteMaterial/{material}', [TeacherController::class, 'destroyMaterial'])->name('material.delete');
 

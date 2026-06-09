@@ -35,7 +35,10 @@
                         <i class="fas fa-external-link-alt"></i> Open Link
                     </a>
                 @else
-                    <a href="{{ route('material.download', $material->id) }}" class="ui-btn ui-btn-primary">
+                    <a href="{{ route('material.view', $material->id) }}" target="_blank" class="ui-btn ui-btn-primary">
+                        <i class="fas fa-eye"></i> View Document
+                    </a>
+                    <a href="{{ route('material.download', $material->id) }}" class="ui-btn ui-btn-soft">
                         <i class="fas fa-download"></i> Download
                     </a>
                 @endif

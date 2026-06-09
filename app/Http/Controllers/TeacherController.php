@@ -271,6 +271,19 @@ public function downloadMaterial(Material $material)
     return response()->download($filePath, $fileName);
 }
 
+public function viewMaterialFile(Material $material)
+{
+    if ($material->type === 'link') {
+        return redirect()->away($material->url);
+    }
+
+    if (!$material->file_path || !Storage::disk('public')->exists($material->file_path)) {
+        return abort(404, 'File not found.');
+    }
+
+    return response()->file(Storage::disk('public')->path($material->file_path));
+}
+
 public function destroyMaterial(Request $request, Material $material)
 {
     try {
