@@ -615,6 +615,226 @@ body.sidebar-collapse {
 .nav-sidebar .nav-item:nth-child(10) { animation-delay: 1.0s; }
 .nav-sidebar .nav-item:nth-child(11) { animation-delay: 1.1s; }
 .nav-sidebar .nav-item:nth-child(12) { animation-delay: 1.2s; }
+
+/* Quiet sidebar refresh */
+.main-sidebar {
+    background: #143b32 !important;
+    box-shadow: 6px 0 24px rgba(15, 23, 42, 0.12) !important;
+}
+
+.brand-link {
+    background: #0f2f29 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    min-height: 58px !important;
+    padding: 12px 14px !important;
+}
+
+.brand-image {
+    background: #fff !important;
+    border: 1px solid rgba(255, 255, 255, 0.7) !important;
+    height: 32px !important;
+    width: 32px !important;
+}
+
+.brand-text {
+    color: #f8fafc !important;
+    font-size: 0.95rem !important;
+    letter-spacing: 0 !important;
+    text-shadow: none !important;
+}
+
+.sidebar {
+    height: calc(100vh - 58px) !important;
+    padding: 10px 8px !important;
+}
+
+.user-panel {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+    margin: 8px 0 12px !important;
+    padding: 10px !important;
+}
+
+.user-panel:hover {
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+.form-inline {
+    margin: 0 0 12px !important;
+}
+
+.input-group[data-widget="sidebar-search"] {
+    border-radius: 8px !important;
+    box-shadow: none !important;
+}
+
+.form-control-sidebar {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-radius: 8px 0 0 8px !important;
+    font-size: 0.82rem !important;
+}
+
+.btn-sidebar {
+    background: #22c55e !important;
+    border-radius: 0 8px 8px 0 !important;
+}
+
+.nav-sidebar:has(.nav-link.active) {
+    background: transparent !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.nav-sidebar .nav-item {
+    animation: none !important;
+    margin: 4px 0 !important;
+    opacity: 1 !important;
+}
+
+.nav-sidebar .nav-link {
+    background: transparent !important;
+    border: 1px solid transparent !important;
+    border-radius: 8px !important;
+    color: rgba(255, 255, 255, 0.86) !important;
+    min-height: 40px !important;
+    padding: 9px 11px !important;
+    transition: background-color 0.15s ease, color 0.15s ease !important;
+}
+
+.nav-sidebar .nav-link:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.09) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    box-shadow: none !important;
+    color: #fff !important;
+    transform: none !important;
+}
+
+.nav-sidebar .nav-link.active,
+.sidebar-collapse .nav-sidebar .nav-link.active {
+    animation: none !important;
+    background: #eaf8f1 !important;
+    border: 0 !important;
+    border-left: 4px solid #22c55e !important;
+    box-shadow: none !important;
+    color: #0f2f29 !important;
+    font-weight: 800 !important;
+    overflow: hidden !important;
+    transform: none !important;
+}
+
+.nav-sidebar .nav-link.active::before,
+.nav-sidebar .nav-link.active::after,
+.sidebar-collapse .nav-sidebar .nav-link.active::after,
+.sidebar-collapse .nav-sidebar .nav-link.active::before {
+    animation: none !important;
+    display: none !important;
+}
+
+.nav-sidebar .nav-icon {
+    color: inherit !important;
+    font-size: 0.95rem !important;
+    margin-right: 10px !important;
+    transform: none !important;
+    transition: none !important;
+}
+
+.nav-sidebar .nav-link:hover:not(.active) .nav-icon,
+.nav-sidebar .nav-link.active .nav-icon,
+.sidebar-collapse .nav-sidebar .nav-link.active .nav-icon {
+    color: inherit !important;
+    filter: none !important;
+    font-size: 0.95rem !important;
+    text-shadow: none !important;
+    transform: none !important;
+}
+
+.nav-sidebar .nav-link p,
+.nav-sidebar .nav-link.active p {
+    font-size: 0.82rem !important;
+    font-weight: 650 !important;
+    letter-spacing: 0 !important;
+    text-shadow: none !important;
+}
+
+.sidebar-collapse .main-sidebar {
+    background: #143b32 !important;
+    width: 64px !important;
+}
+
+.sidebar-collapse .brand-link {
+    height: 58px !important;
+}
+
+.sidebar-collapse .nav-sidebar .nav-link {
+    height: 42px !important;
+    width: 42px !important;
+}
+
+.sidebar-collapse .nav-sidebar .nav-link::after,
+.sidebar-collapse .nav-sidebar .nav-link::before {
+    display: none !important;
+}
+
+/* Expand the mini sidebar while the mouse is over it */
+body.sidebar-collapse .main-sidebar:hover {
+    width: 250px !important;
+}
+
+body.sidebar-collapse .main-sidebar:hover .brand-link {
+    justify-content: flex-start !important;
+    padding: 12px 14px !important;
+}
+
+body.sidebar-collapse .main-sidebar:hover .brand-text,
+body.sidebar-collapse .main-sidebar:hover .user-panel .info,
+body.sidebar-collapse .main-sidebar:hover .form-inline,
+body.sidebar-collapse .main-sidebar:hover .nav-sidebar .nav-link p {
+    display: block !important;
+}
+
+body.sidebar-collapse .main-sidebar:hover .sidebar {
+    align-items: stretch !important;
+    padding: 10px 8px !important;
+}
+
+body.sidebar-collapse .main-sidebar:hover .nav-sidebar {
+    align-items: stretch !important;
+    padding: 0 !important;
+}
+
+body.sidebar-collapse .main-sidebar:hover .nav-sidebar .nav-link {
+    height: auto !important;
+    justify-content: flex-start !important;
+    min-height: 40px !important;
+    padding: 9px 11px !important;
+    width: 100% !important;
+}
+
+body.sidebar-collapse .main-sidebar:hover .nav-sidebar .nav-icon {
+    height: auto !important;
+    margin-right: 10px !important;
+    width: 20px !important;
+}
+
+body.sidebar-collapse .main-sidebar:hover .user-panel {
+    justify-content: flex-start !important;
+    margin: 8px 0 12px !important;
+    padding: 10px !important;
+}
+
+body.sidebar-collapse .main-sidebar:hover .brand-image {
+    margin-right: 10px !important;
+}
+
+body.sidebar-collapse.sidebar-hover-open .content-wrapper,
+body.sidebar-collapse.sidebar-hover-open .main-footer,
+body.sidebar-collapse.sidebar-hover-open .main-header {
+    margin-left: 250px !important;
+}
 </style>
 
     {{-- Enhanced sidebar --}}
@@ -622,8 +842,8 @@ body.sidebar-collapse {
       <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="#" class="brand-link">
-      <img src="{{asset('images/tpdf.png')}}" alt="Logo" class="brand-image img-circle elevation-3">
-      <span class="brand-text">TPDF E-Learning</span>
+      <img src="{{asset('images/elimu.png')}}" alt="Logo" class="brand-image img-circle elevation-3">
+      <span class="brand-text">E-Learning LMS</span>
     </a>
 
     <!-- Sidebar -->
@@ -1028,6 +1248,18 @@ document.addEventListener('DOMContentLoaded', function() {
         if (isCollapsed === 'true') {
             body.classList.add('sidebar-collapse');
         }
+    }
+
+    if (sidebar) {
+        sidebar.addEventListener('mouseenter', function() {
+            if (window.innerWidth > 768 && body.classList.contains('sidebar-collapse')) {
+                body.classList.add('sidebar-hover-open');
+            }
+        });
+
+        sidebar.addEventListener('mouseleave', function() {
+            body.classList.remove('sidebar-hover-open');
+        });
     }
     
     function initializeTooltips() {
