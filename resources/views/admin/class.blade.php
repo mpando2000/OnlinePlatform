@@ -1,415 +1,92 @@
 @extends('components.dashmaster')
-@section('body')
 
-<!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper">
-    <div class="container-fluid">
-        <!-- Clean Header -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="page-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h1 class="page-title">
-                                <i class="fas fa-book me-2"></i>
-                                {{ $school_class->name }} - Subjects
-                            </h1>
-                            <nav aria-label="breadcrumb">
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item">
-                                        <a href="{{ route('admin.dashboard') }}">Dashboard</a>
-                                    </li>
-                                    <li class="breadcrumb-item">
-                                        <a href="{{ route('admin.classes') }}">Classes</a>
-                                    </li>
-                                    <li class="breadcrumb-item active">{{ $school_class->name }}</li>
-                                </ol>
-                            </nav>
-                        </div>
-                        <div class="header-actions">
-                            <button class="btn btn-primary me-2" onclick="window.location.href='{{ route('subjectForm', $school_class->id) }}'">
-                                <i class="fas fa-plus me-1"></i>
-                                Add Subject
-                            </button>
-                            <button class="btn btn-secondary" onclick="window.location.href='{{ route('admin.classes') }}'">
-                                <i class="fas fa-arrow-left me-1"></i>
-                                Back to Classes
-                            </button>
-                        </div>
-                    </div>
-                </div>
+@section('body')
+<div class="content-wrapper admin-clean-page">
+    <div class="container-fluid page-shell">
+        <div class="page-panel">
+            <div>
+                <h1><i class="fas fa-book"></i> {{ $school_class->name }}</h1>
+                <p>Subjects and learning materials for this class.</p>
+            </div>
+            <div class="page-actions">
+                <a href="{{ route('subjectForm', $school_class->id) }}" class="ui-btn ui-btn-primary"><i class="fas fa-plus"></i> Add Subject</a>
+                <a href="{{ route('admin.classes') }}" class="ui-btn ui-btn-light"><i class="fas fa-arrow-left"></i> Classes</a>
             </div>
         </div>
 
-        <!-- Main Content -->
-        <div class="row">
-            <div class="col-12">
-                <div class="main-card">
-                    <div class="card-header">
-                        <h4 class="card-title mb-0">
-                            <i class="fas fa-list me-2"></i>
-                            Subjects in {{ $school_class->name }}
-                        </h4>
-                    </div>
-                    <div class="card-body">
-                        @if($subjects->count() > 0)
-                            <div class="table-responsive">
-                                <table class="table subjects-table">
-                                    <thead>
-                                        <tr>
-                                            <th class="subject-name-col">
-                                                <i class="fas fa-book-open me-1"></i>
-                                                Subject Name
-                                            </th>
-                                            <th class="actions-col">
-                                                <i class="fas fa-cogs me-1"></i>
-                                                Actions
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($subjects as $subject)
-                                        <tr>
-                                            <td class="subject-name">
-                                                <div class="subject-info">
-                                                    <i class="fas fa-graduation-cap subject-icon"></i>
-                                                    <span class="subject-title">{{ $subject->name }}</span>
-                                                </div>
-                                            </td>
-                                            <td class="actions">
-                                                <div class="btn-group" role="group">
-                                                    <a href="{{ route('admin.subjects', ['class' => $school_class->id, 'subject' => $subject->id]) }}" 
-                                                       class="btn btn-view">
-                                                        <i class="fas fa-eye me-1"></i>
-                                                        <span class="d-none d-md-inline">View Materials</span>
-                                                    </a>
-                                                    <button type="button" 
-                                                            class="btn btn-edit"
-                                                            onclick="editSubject({{ $subject->id }})">
-                                                        <i class="fas fa-edit me-1"></i>
-                                                        <span class="d-none d-md-inline">Edit</span>
-                                                    </button>
-                                                    <button type="button" 
-                                                            class="btn btn-delete"
-                                                            onclick="deleteSubject({{ $subject->id }}, '{{ $subject->name }}')">
-                                                        <i class="fas fa-trash me-1"></i>
-                                                        <span class="d-none d-md-inline">Delete</span>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        @else
-                            <div class="empty-state">
-                                <div class="empty-icon">
-                                    <i class="fas fa-book-open"></i>
-                                </div>
-                                <h5>No Subjects Found</h5>
-                                <p class="text-muted">This class doesn't have any subjects yet.</p>
-                                <a href="{{ route('subjectForm', $school_class->id) }}" class="btn btn-primary">
-                                    <i class="fas fa-plus me-1"></i>
-                                    Add First Subject
-                                </a>
-                            </div>
-                        @endif
-                    </div>
-                </div>
+        @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+
+        <div class="table-card">
+            <div class="table-title">
+                <strong>Subjects</strong>
+                <span>{{ $subjects->count() }} subjects</span>
+            </div>
+            <div class="table-responsive">
+                <table class="clean-table">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($subjects as $subject)
+                            <tr>
+                                <td><strong>{{ $subject->name }}</strong></td>
+                                <td>
+                                    <div class="row-actions">
+                                        <a href="{{ route('admin.subjects', ['class' => $school_class->id, 'subject' => $subject->id]) }}" class="ui-btn ui-btn-primary"><i class="fas fa-folder-open"></i> Materials</a>
+                                        <a href="{{ route('editSubjectForm', $subject->id) }}" class="icon-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                        <form method="POST" action="{{ route('destroySubject', $subject->id) }}" onsubmit="return confirm('Delete this subject?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="icon-btn danger" title="Delete"><i class="fas fa-trash"></i></button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="2" class="empty-cell">No subjects found for this class.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
 
-<footer class="main-footer">
-    <strong>Copyright &copy; <span id="currentYear"></span> <a href="https://sumajkt.go.tz">Visit Our Website</a>.</strong>
-    All rights reserved.
-    <div class="float-right d-none d-sm-inline-block">
-        {{-- <b>Version</b> 3.2.0 --}}
-    </div>
-</footer>
+<footer class="main-footer"><strong>&copy; <span id="currentYear"></span> E-Learning Management System.</strong> All rights reserved.</footer>
 
 <style>
-    .content-wrapper {
-        padding: 20px;
-    }
-    
-    .page-header {
-        background: #f8f9fa;
-        border-radius: 8px;
-        padding: 20px;
-        margin-bottom: 25px;
-        border-left: 4px solid #007bff;
-    }
-
-    .page-title {
-        color: #495057;
-        font-size: 1.6rem;
-        font-weight: 500;
-        margin-bottom: 8px;
-    }
-
-    .breadcrumb {
-        background: transparent;
-        padding: 0;
-        margin: 0;
-        font-size: 0.9rem;
-    }
-
-    .breadcrumb-item a {
-        color: #007bff;
-        text-decoration: none;
-    }
-
-    .breadcrumb-item a:hover {
-        text-decoration: underline;
-    }
-
-    .header-actions .btn {
-        border-radius: 4px;
-        font-weight: 500;
-    }
-
-    .main-card {
-        background: #fff;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        border: none;
-        overflow: hidden;
-    }
-
-    .main-card .card-header {
-        background: #28a745;
-        color: white;
-        padding: 15px 20px;
-        border: none;
-    }
-
-    .main-card .card-title {
-        font-weight: 500;
-        font-size: 1.1rem;
-        margin: 0;
-    }
-
-    .main-card .card-body {
-        padding: 0;
-    }
-
-    .subjects-table {
-        margin: 0;
-        border: none;
-    }
-
-    .subjects-table thead {
-        background: #f8f9fa;
-    }
-
-    .subjects-table th {
-        border: none;
-        padding: 15px 20px;
-        font-weight: 500;
-        color: #495057;
-        font-size: 0.95rem;
-    }
-
-    .subjects-table td {
-        border: none;
-        padding: 15px 20px;
-        border-bottom: 1px solid #e9ecef;
-        vertical-align: middle;
-    }
-
-    .subjects-table tbody tr:hover {
-        background: #f8f9fa;
-    }
-
-    .subject-info {
-        display: flex;
-        align-items: center;
-    }
-
-    .subject-icon {
-        color: #28a745;
-        margin-right: 10px;
-        font-size: 1.1rem;
-    }
-
-    .subject-title {
-        font-weight: 500;
-        color: #495057;
-    }
-
-    .btn-group .btn {
-        border-radius: 4px !important;
-        margin-right: 5px;
-        font-size: 0.875rem;
-        padding: 6px 12px;
-        font-weight: 500;
-    }
-
-    .btn-view {
-        background-color: #17a2b8;
-        border-color: #17a2b8;
-        color: white;
-    }
-
-    .btn-view:hover {
-        background-color: #138496;
-        border-color: #138496;
-        color: white;
-    }
-
-    .btn-edit {
-        background-color: #ffc107;
-        border-color: #ffc107;
-        color: #212529;
-    }
-
-    .btn-edit:hover {
-        background-color: #e0a800;
-        border-color: #e0a800;
-        color: #212529;
-    }
-
-    .btn-delete {
-        background-color: #dc3545;
-        border-color: #dc3545;
-        color: white;
-    }
-
-    .btn-delete:hover {
-        background-color: #c82333;
-        border-color: #c82333;
-        color: white;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 60px 20px;
-    }
-
-    .empty-icon {
-        font-size: 4rem;
-        color: #dee2e6;
-        margin-bottom: 20px;
-    }
-
-    .empty-state h5 {
-        color: #495057;
-        margin-bottom: 10px;
-    }
-
-    .empty-state p {
-        margin-bottom: 25px;
-        font-size: 0.95rem;
-    }
-
-    @media (max-width: 768px) {
-        .content-wrapper {
-            padding: 15px;
-        }
-        
-        .page-header {
-            padding: 15px;
-        }
-        
-        .page-title {
-            font-size: 1.4rem;
-        }
-        
-        .header-actions {
-            margin-top: 15px;
-        }
-        
-        .header-actions .btn {
-            width: 100%;
-            margin-bottom: 8px;
-            margin-right: 0 !important;
-        }
-        
-        .subjects-table th,
-        .subjects-table td {
-            padding: 12px 15px;
-        }
-        
-        .btn-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        
-        .btn-group .btn {
-            margin-right: 0 !important;
-        }
-    }
-
-    @media (max-width: 576px) {
-        .subjects-table th.actions-col,
-        .subjects-table td.actions {
-            text-align: center;
-        }
-    }
+.admin-clean-page { background: #f5f7fb; min-height: 100vh; }
+.page-shell { padding: 18px; }
+.page-panel, .table-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; }
+.page-panel { align-items: center; display: flex; gap: 14px; justify-content: space-between; margin-bottom: 14px; padding: 16px 18px; }
+.page-panel h1 { color: #172033; font-size: 22px; font-weight: 800; margin: 0; }
+.page-panel h1 i { color: #123d35; margin-right: 8px; }
+.page-panel p { color: #6b7280; margin: 4px 0 0; }
+.page-actions, .row-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+.row-actions form { margin: 0; }
+.ui-btn, .icon-btn { align-items: center; border: 0; border-radius: 6px; display: inline-flex; font-weight: 800; gap: 7px; min-height: 34px; padding: 8px 12px; }
+.ui-btn:hover, .icon-btn:hover { text-decoration: none; }
+.ui-btn-primary { background: #123d35; color: #fff; }
+.ui-btn-primary:hover { background: #1f6f5b; color: #fff; }
+.ui-btn-light { background: #eef2f7; color: #374151; }
+.table-title { align-items: center; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; padding: 13px 16px; }
+.table-title strong { color: #172033; }
+.table-title span { color: #6b7280; font-size: 12px; font-weight: 800; }
+.clean-table { margin: 0; width: 100%; }
+.clean-table th { background: #f8fafc; color: #4b5563; font-size: 12px; padding: 12px 16px; text-transform: uppercase; }
+.clean-table td { border-top: 1px solid #eef2f7; color: #172033; padding: 13px 16px; vertical-align: middle; }
+.icon-btn { background: #eef2f7; color: #374151; justify-content: center; min-width: 34px; padding: 8px; }
+.icon-btn.danger { color: #b91c1c; }
+.empty-cell { color: #6b7280; text-align: center; }
+@media (max-width: 768px) { .page-panel { align-items: flex-start; flex-direction: column; } .row-actions { justify-content: flex-start; } }
 </style>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Update year in footer
-        const yearEl = document.getElementById('currentYear');
-        if (yearEl) {
-            yearEl.textContent = new Date().getFullYear();
-        }
-    });
-
-    // Edit subject function - redirect to edit page
-    function editSubject(subjectId) {
-        if (confirm('Do you want to edit this subject?')) {
-            window.location.href = '/editSubjectForm/' + subjectId;
-        }
-    }
-
-    // Delete subject function
-    function deleteSubject(subjectId, subjectName) {
-        if (confirm('Are you sure you want to delete the subject "' + subjectName + '"? This action cannot be undone and will remove all related materials.')) {
-            // Show loading state
-            const deleteBtn = event.target.closest('button');
-            const originalContent = deleteBtn.innerHTML;
-            deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Deleting...';
-            deleteBtn.disabled = true;
-
-            // Create a form to submit the delete request
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/deleteSubject/' + subjectId;
-            form.style.display = 'none';
-
-            // Add CSRF token
-            const csrfToken = document.querySelector('meta[name="csrf-token"]');
-            if (csrfToken) {
-                const csrfInput = document.createElement('input');
-                csrfInput.type = 'hidden';
-                csrfInput.name = '_token';
-                csrfInput.value = csrfToken.getAttribute('content');
-                form.appendChild(csrfInput);
-            } else {
-                alert('CSRF token not found. Please refresh the page and try again.');
-                // Reset button state
-                deleteBtn.innerHTML = originalContent;
-                deleteBtn.disabled = false;
-                return;
-            }
-
-            // Add method spoofing for DELETE
-            const methodInput = document.createElement('input');
-            methodInput.type = 'hidden';
-            methodInput.name = '_method';
-            methodInput.value = 'DELETE';
-            form.appendChild(methodInput);
-
-            // Append form to body and submit
-            document.body.appendChild(form);
-            form.submit();
-        }
-    }
-</script>
+<script>document.getElementById("currentYear").textContent = new Date().getFullYear();</script>
 @endsection

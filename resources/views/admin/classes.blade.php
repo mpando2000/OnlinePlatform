@@ -1,209 +1,113 @@
 @extends('components.dashmaster')
 
 @section('body')
-<!-- CSRF Token -->
-<meta name="csrf-token" content="{{ csrf_token() }}">
-
-<div class="content-wrapper">
-    <div class="container-fluid p-4">
-        <!-- Page Header -->
-        <div class="row mb-4">
-            <div class="col-md-8">
-                <h2>
-                    <i class="fas fa-school mr-2"></i>
-                    Classes Management
-                </h2>
+<div class="content-wrapper admin-clean-page">
+    <div class="container-fluid page-shell">
+        <div class="page-panel">
+            <div>
+                <h1><i class="fas fa-chalkboard"></i> Classes</h1>
+                <p>Manage academic classes and their subjects.</p>
             </div>
-            <div class="col-md-4 text-right">
-                <a href="/addClass" class="btn btn-primary">
-                    <i class="fas fa-plus mr-1"></i>
-                    Add New Class
-                </a>
-            </div>
+            <a href="/addClass" class="ui-btn ui-btn-primary"><i class="fas fa-plus"></i> Add Class</a>
         </div>
 
-        <!-- Classes List -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">All Classes</h5>
-                    </div>
-                    <div class="card-body">
-                        @if(count($schoolClasses) > 0)
-                            <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Class Name</th>
-                                            <th>Created Date</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($schoolClasses as $schoolClass)
-                                            <tr>
-                                                <td>
-                                                    <strong>{{ $schoolClass->name }}</strong>
-                                                </td>
-                                                <td>
-                                                    {{ $schoolClass->created_at ? $schoolClass->created_at->format('M d, Y') : 'N/A' }}
-                                                </td>
-                                                <td>
-                                                    <a href="/viewClass/{{ $schoolClass->id }}" class="btn btn-primary btn-sm mr-1">
-                                                        <i class="fas fa-eye"></i> View
-                                                    </a>
-                                                    <button class="btn btn-warning btn-sm mr-1" onclick="editClass({{ $schoolClass->id }})">
-                                                        <i class="fas fa-edit"></i> Edit
-                                                    </button>
-                                                    <button class="btn btn-danger btn-sm" onclick="deleteClass({{ $schoolClass->id }}, '{{ $schoolClass->name }}')">
-                                                        <i class="fas fa-trash"></i> Delete
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        @else
-                            <div class="text-center py-4">
-                                <i class="fas fa-school fa-3x text-muted mb-3"></i>
-                                <h4>No Classes Found</h4>
-                                <p class="text-muted">Start by creating your first class.</p>
-                                <a href="/addClass" class="btn btn-primary">
-                                    <i class="fas fa-plus mr-1"></i>Create First Class
-                                </a>
-                            </div>
-                        @endif
-                    </div>
-                </div>
+        @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+
+        <div class="table-card">
+            <div class="table-title">
+                <strong>Class List</strong>
+                <span>{{ count($schoolClasses) }} classes</span>
             </div>
-        </div>
+            <div class="table-responsive">
+                <table class="clean-table">
+                    <thead>
+                        <tr>
+                            <th>Class</th>
+                            <th>Created</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($schoolClasses as $schoolClass)
+                            <tr>
+                                <td><strong>{{ $schoolClass->name }}</strong></td>
+                                <td>{{ $schoolClass->created_at ? $schoolClass->created_at->format('M j, Y') : 'N/A' }}</td>
+                                <td>
+                                    <div class="row-actions">
+                                        <a href="/viewClass/{{ $schoolClass->id }}" class="icon-btn" title="View"><i class="fas fa-eye"></i></a>
+                                        <a href="/editClassForm/{{ $schoolClass->id }}" class="icon-btn" title="Edit"><i class="fas fa-edit"></i></a>
+                                        <form method="POST" action="/deleteClass/{{ $schoolClass->id }}" onsubmit="return confirm('Delete this class?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="icon-btn danger" title="Delete"><i class="fas fa-trash"></i></button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="3" class="empty-cell">No classes found. Add your first class to begin.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Footer -->
 <footer class="main-footer">
-    <strong>Copyright &copy; <span id="currentYear"></span> <a href="https://sumajkt.go.tz">Visit Our Website</a>.</strong>
+    <strong>&copy; <span id="currentYear"></span> E-Learning Management System.</strong>
     All rights reserved.
-    <div class="float-right d-none d-sm-inline-block">
-      {{-- <b>Version</b> 3.2.0 --}}
-    </div>
 </footer>
 
 <style>
-    .content-wrapper {
-        padding: 20px;
-    }
-    
-    h2 {
-        color: #495057;
-        font-weight: 500;
-        margin-bottom: 20px;
-    }
-    
-    .card {
-        border: none;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-    
-    .card-header {
-        background: #007bff;
-        color: white;
-        border-radius: 8px 8px 0 0;
-        padding: 15px 20px;
-    }
-    
-    .table th {
-        border-top: none;
-        font-weight: 500;
-        color: #495057;
-    }
-    
-    .btn {
-        border-radius: 4px;
-        font-weight: 500;
-        padding: 6px 12px;
-        transition: all 0.15s ease-in-out;
-    }
-    
-    .btn-sm {
-        padding: 4px 8px;
-        font-size: 0.875rem;
-    }
-    
-    @media (max-width: 768px) {
-        .content-wrapper {
-            padding: 15px;
-        }
-        
-        h2 {
-            font-size: 1.5rem;
-        }
-    }
+.admin-clean-page { background: #f5f7fb; min-height: 100vh; }
+.page-shell { padding: 18px; }
+.page-panel, .table-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+.page-panel {
+    align-items: center;
+    display: flex;
+    gap: 14px;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    padding: 16px 18px;
+}
+.page-panel h1 { color: #172033; font-size: 22px; font-weight: 800; margin: 0; }
+.page-panel h1 i { color: #123d35; margin-right: 8px; }
+.page-panel p { color: #6b7280; margin: 4px 0 0; }
+.ui-btn, .icon-btn {
+    align-items: center;
+    border: 0;
+    border-radius: 6px;
+    display: inline-flex;
+    font-weight: 800;
+    gap: 7px;
+    min-height: 34px;
+    padding: 8px 12px;
+}
+.ui-btn:hover, .icon-btn:hover { text-decoration: none; }
+.ui-btn-primary { background: #123d35; color: #fff; }
+.ui-btn-primary:hover { background: #1f6f5b; color: #fff; }
+.table-title { align-items: center; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; padding: 13px 16px; }
+.table-title strong { color: #172033; }
+.table-title span { color: #6b7280; font-size: 12px; font-weight: 800; }
+.clean-table { margin: 0; width: 100%; }
+.clean-table th { background: #f8fafc; color: #4b5563; font-size: 12px; padding: 12px 16px; text-transform: uppercase; }
+.clean-table td { border-top: 1px solid #eef2f7; color: #172033; padding: 13px 16px; vertical-align: middle; }
+.row-actions { display: flex; gap: 6px; justify-content: flex-end; }
+.row-actions form { margin: 0; }
+.icon-btn { background: #eef2f7; color: #374151; min-width: 34px; padding: 8px; justify-content: center; }
+.icon-btn.danger { color: #b91c1c; }
+.empty-cell { color: #6b7280; text-align: center; }
+@media (max-width: 768px) { .page-panel { align-items: flex-start; flex-direction: column; } }
 </style>
 
-<script>
-    // Set current year in footer
-    document.addEventListener('DOMContentLoaded', function() {
-        const yearEl = document.getElementById('currentYear');
-        if (yearEl) {
-            yearEl.textContent = new Date().getFullYear();
-        }
-    });
-
-    // Edit class function - redirect to edit page
-    function editClass(classId) {
-        if (confirm('Do you want to edit this class?')) {
-            window.location.href = '/editClassForm/' + classId;
-        }
-    }
-
-    // Delete class function
-    function deleteClass(classId, className) {
-        if (confirm('Are you sure you want to delete the class "' + className + '"? This action cannot be undone.')) {
-            // Show loading state
-            const deleteBtn = event.target.closest('button');
-            const originalContent = deleteBtn.innerHTML;
-            deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
-            deleteBtn.disabled = true;
-
-            // Create a form to submit the delete request
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/deleteClass/' + classId;
-            form.style.display = 'none';
-
-            // Add CSRF token
-            const csrfToken = document.querySelector('meta[name="csrf-token"]');
-            if (csrfToken) {
-                const csrfInput = document.createElement('input');
-                csrfInput.type = 'hidden';
-                csrfInput.name = '_token';
-                csrfInput.value = csrfToken.getAttribute('content');
-                form.appendChild(csrfInput);
-            } else {
-                alert('CSRF token not found. Please refresh the page and try again.');
-                // Reset button state
-                deleteBtn.innerHTML = originalContent;
-                deleteBtn.disabled = false;
-                return;
-            }
-
-            // Add method spoofing for DELETE
-            const methodInput = document.createElement('input');
-            methodInput.type = 'hidden';
-            methodInput.name = '_method';
-            methodInput.value = 'DELETE';
-            form.appendChild(methodInput);
-
-            // Append form to body and submit
-            document.body.appendChild(form);
-            form.submit();
-        }
-    }
-</script>
-
+<script>document.getElementById("currentYear").textContent = new Date().getFullYear();</script>
 @endsection
