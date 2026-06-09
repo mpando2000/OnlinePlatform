@@ -1138,7 +1138,7 @@ body.sidebar-collapse.sidebar-hover-open .main-header {
                                 <a class="nav-link "
                                     href="/to-do-list">
                                     <span class="nav-icon fa ion-clipboard"></span>
-                                    <p>To_do_List</p>
+                                    <p>To-Do List</p>
                                 </a>
                             </li>
                         @endif
