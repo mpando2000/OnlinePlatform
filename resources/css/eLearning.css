@@ -1,0 +1,962 @@
+/* -------------------------------------
+         body-css
+------------------------------------- */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    padding-top: 90px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    z-index: 1;
+}
+
+.background {
+    background-color: rgb(178, 217, 143);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding-top: 120px;
+    background-image: url("../../public/images/elimu.png");
+    background-size: cover;
+    background-size: 50% 50%;
+    background-repeat: no-repeat;
+
+    background-position: center;
+    opacity: 0.5;
+    z-index: -1;
+}
+.header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 120px;
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    z-index: 1000;
+}
+
+.logo-left,
+.logo-right {
+    flex-shrink: 0;
+}
+
+.header h1 {
+    flex-grow: 1;
+    font-size: 2vw;
+    text-align: center;
+    margin: 0;
+}
+
+.logo-left img,
+.logo-right img {
+    height: 100px;
+    width: 100px;
+}
+
+h1 {
+    color: rgba(2, 82, 2, 0.99);
+}
+
+@media (max-width: 768px) {
+    .header {
+        height: auto;
+        padding: 10px;
+    }
+
+    .header h1 {
+        font-size: 4vw;
+    }
+
+    .logo-left img,
+    .logo-right img {
+        height: 80px;
+        width: 80px;
+    }
+}
+
+.ml-6 {
+    display: flex;
+    justify-content: center;
+    margin-top: 150px;
+}
+
+.photo {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.photo > div {
+    flex-basis: 33.33%;
+    text-align: center;
+}
+
+.photo img {
+    width: 90px;
+    height: 90px;
+    margin: 10px;
+}
+
+.photo h1 {
+    text-align: center;
+}
+/* -------------------------------------
+         slider-css
+------------------------------------- */
+
+.slider-container {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    height: 500px;
+    overflow: visible;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 80px;
+    padding-bottom: 50px;
+}
+
+.slider-container .card {
+    width: 90%;
+    max-width: 1000px;
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s ease;
+    position: relative;
+}
+
+.slider-container .card:hover {
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+}
+
+.slider-container .card-header {
+    background: linear-gradient(135deg, rgba(2, 82, 2, 0.8) 0%, rgba(76, 175, 80, 0.8) 100%);
+    border-bottom: 3px solid rgba(2, 82, 2, 0.9);
+    padding: 15px 0;
+    min-height: auto;
+}
+
+.slider-container .card-body {
+    padding: 0;
+    background-color: #f8f9fa;
+}
+
+.image-bar {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin-left: 200px;
+    margin-top: 150px;
+}
+
+.image-slide {
+    position: absolute;
+    width: 80%;
+    height: 70%;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.image-slide.active {
+    opacity: 1;
+}
+
+.image-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.text-overlay {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    color: white;
+    font-size: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.carousel-item {
+    position: relative;
+    height: 500px;
+}
+
+.carousel-item img {
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+}
+
+.carousel-item::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
+    z-index: 1;
+}
+
+.carousel-inner {
+    position: relative;
+    height: 500px;
+}
+
+.carousel-indicators {
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.carousel-indicators button {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid rgba(2, 82, 2, 0.6);
+    background-color: rgba(2, 82, 2, 0.3);
+    transition: all 0.3s ease;
+    margin: 0;
+    cursor: pointer;
+}
+
+.carousel-indicators button.active {
+    background-color: rgba(2, 82, 2, 1);
+    border-color: rgba(2, 82, 2, 1);
+    width: 14px;
+    height: 14px;
+}
+
+.carousel-indicators button:hover {
+    background-color: rgba(2, 82, 2, 0.7);
+    border-color: rgba(2, 82, 2, 1);
+}
+
+#carouselExampleCaptions {
+    position: relative;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    opacity: 0;
+    transition: all 0.4s ease;
+    z-index: 10;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    width: 35px;
+    height: 35px;
+    background-size: 100%, 100%;
+    filter: brightness(1.3) drop-shadow(0 0 3px rgba(0, 0, 0, 0.8));
+}
+
+.carousel:hover .carousel-control-prev,
+.carousel:hover .carousel-control-next {
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.7);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-control-prev {
+    left: 20px;
+}
+
+.carousel-control-next {
+    right: 20px;
+}
+
+.carousel-caption {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.carousel-caption p {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    margin: 0;
+    max-width: 90%;
+}
+
+/* -------------------------------------
+         button-css
+------------------------------------- */
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.button:active {
+    background-color: #00408d;
+    transform: scale(0.95);
+}
+
+.button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* -------------------------------------
+         login-css
+------------------------------------- */
+#log {
+    background-image: url("../../public/images/IMG13.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center center;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow: auto;
+    padding-top: 150px;
+}
+#Alog {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center center;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow: auto;
+    padding-top: 80px;
+}
+
+.login-container {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    padding: 40px 30px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.login-container input[type="email"],
+.login-container input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.login-container input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-container input[type="submit"]:hover {
+    background-color: #218838;
+}
+
+.login-container input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.login-container label {
+    font-size: 14px;
+}
+
+.login-container a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.login-container a:hover {
+    text-decoration: underline;
+}
+
+.text-danger {
+    color: red;
+    font-size: 12px;
+}
+
+.toggle-password i {
+    font-size: 1.2rem;
+    color: #000;
+}
+
+.toggle-password i:hover {
+    color: #007bff;
+}
+
+/* -------------------------------------
+         register-css
+------------------------------------- */
+
+
+.form-container {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+    margin-bottom: 50px;
+    margin-top: 100px;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px; /* Add space between rows */
+}
+
+.form-row > div {
+    flex: 1; /* Make all fields in the row equal size */
+}
+
+.form-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-container input[type="text"],
+.form-container input[type="email"],
+.form-container input[type="password"],
+.form-container select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box; /* Prevent padding from affecting width */
+}
+
+.form-container input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.form-container input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+.form-container a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.form-container a:hover {
+    text-decoration: underline;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+
+/* Styling the eye icon */
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 12px; /* Adjust this for vertical alignment */
+}
+
+.toggle-password i {
+    font-size: 1.2rem;
+    color: #000;
+}
+
+.toggle-password i:hover {
+    color: #007bff;
+}
+
+/*...........................
+footer
+.............................*/
+.footer {
+    background-color: rgba(13, 91, 12, 0.976);
+    padding-left: 12%;
+}
+
+/* icon css */
+
+.fa {
+    color: rgba(13, 91, 12, 0.976);
+}
+.icon {
+    color: rgba(255, 255, 255, 0.976);
+}
+
+.padding {
+    padding: 20% 35%;
+    background-image: url("../../public/images/subjectbg.png");
+    background-size: cover;
+    background-position: fixed;
+    background-repeat: no-repeat;
+    height: 100%;
+    width: 100%;
+}
+
+/* sidebar css */
+
+.sidebarMenu {
+    background-color: #ad2828;
+}
+
+.welcome-message {
+    background-color: #f8f9fa;
+    border-left: 5px solid #007bff;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.card i {
+    float: right;
+}
+
+.card {
+    transition: all 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.list-group-item i {
+    margin-right: 10px;
+}
+
+#subject_id,
+#class_id {
+    padding: 2px;
+}
+
+.link {
+    color: #ad2828;
+}
+
+.padding-c {
+    padding: 20% 35%;
+    background-image: url("../../public/images/class.jpeg");
+    background-size: cover;
+    background-position: fixed;
+    background-repeat: no-repeat;
+    height: 100%;
+    width: 100%;
+}
+.Apadding-c {
+    padding: 20% 35%;
+    height: 100%;
+    width: 100%;
+}
+
+.sub {
+    padding: 90px;
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 120px;
+}
+
+.sub > p {
+    color: #4caf50;
+    padding: 2%;
+    font-size: 36px;
+    margin-top: 30vh;
+}
+
+.Tsub {
+    padding: 90px;
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 120px;
+}
+
+.Tsub > p {
+    color: white;
+    padding: 2%;
+    font-size: 36px;
+    margin-top: 10vh;
+    margin-bottom: 30vh;
+    border: 2px solid red;
+    border-radius: 5px;
+
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
+        1px 1px 0 #000;
+}
+
+/*................................
+ todo list
+ .................................*/
+.to_do_list_custom {
+    list-style: none;
+    padding: 0;
+}
+
+.to_do_list_custom li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.text {
+    margin-left: 10px;
+    flex-grow: 1;
+}
+
+.custom-dashboard {
+    background-image: url("../../public/images/online.jpg");
+    background-size: cover;
+    background-position: center;
+}
+
+.custom-student {
+    background-image: url("../../public/images/online.jpg");
+    background-size: cover;
+    background-position: center;
+}
+
+/*...............................
+ blog
+ ...............................*/
+.card {
+    background: #fff;
+    transition: 0.5s;
+    border: 0;
+    margin-bottom: 30px;
+    border-radius: 0.55rem;
+    position: relative;
+    width: 100%;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
+}
+.chat-app .people-list {
+    width: 280px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 20px;
+    z-index: 7;
+}
+
+.chat-list {
+    height: 672px;
+    overflow: auto;
+}
+
+.chat-app .chat {
+    margin-left: 280px;
+    border-left: 1px solid #eaeaea;
+}
+
+.people-list {
+    -moz-transition: 0.5s;
+    -o-transition: 0.5s;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+}
+
+.people-list .chat-list li {
+    padding: 10px 15px;
+    list-style: none;
+    border-radius: 3px;
+}
+
+.people-list .chat-list li:hover {
+    background: #efefef;
+    cursor: pointer;
+}
+
+.people-list .chat-list li.active {
+    background: #efefef;
+}
+
+.people-list .chat-list li .name {
+    font-size: 15px;
+}
+
+.people-list .chat-list img {
+    width: 45px;
+    border-radius: 50%;
+}
+
+.people-list img {
+    float: left;
+    border-radius: 50%;
+}
+
+.people-list .about {
+    float: left;
+    padding-left: 8px;
+}
+
+.people-list .status {
+    color: #999;
+    font-size: 13px;
+}
+
+.chat .chat-header {
+    padding: 15px 20px;
+    border-bottom: 2px solid #f4f7f6;
+}
+
+.chat .chat-header img {
+    float: left;
+    border-radius: 40px;
+    width: 40px;
+}
+
+.chat .chat-header .chat-about {
+    float: left;
+    padding-left: 10px;
+}
+
+.chat .chat-history {
+    padding: 20px;
+    border-bottom: 2px solid #fff;
+    height: 600px;
+    overflow: auto;
+}
+
+.chat .chat-history ul {
+    padding: 0;
+}
+
+.chat .chat-history ul li {
+    list-style: none;
+    margin-bottom: 30px;
+}
+
+.chat .chat-history ul li:last-child {
+    margin-bottom: 0px;
+}
+
+.chat .chat-history .message-data {
+    margin-bottom: 15px;
+}
+
+.chat .chat-history .message-data img {
+    border-radius: 40px;
+    width: 40px;
+}
+
+.chat .chat-history .message-data-time {
+    color: #434651;
+    padding-left: 6px;
+}
+
+.chat .chat-history .message {
+    color: #444;
+    padding: 18px 20px;
+    line-height: 26px;
+    font-size: 16px;
+    border-radius: 7px;
+    display: inline-block;
+    position: relative;
+}
+
+.chat .chat-history .message:after {
+    bottom: 100%;
+    left: 7%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-bottom-color: #fff;
+    border-width: 10px;
+    margin-left: -10px;
+}
+
+.chat .chat-history .my-message {
+    background: #efefef;
+}
+
+.chat .chat-history .my-message:after {
+    bottom: 100%;
+    left: 30px;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-bottom-color: #efefef;
+    border-width: 10px;
+    margin-left: -10px;
+}
+
+.chat .chat-history .other-message {
+    background: #e8f1f3;
+    text-align: right;
+}
+
+.chat .chat-history .other-message:after {
+    border-bottom-color: #e8f1f3;
+    left: 93%;
+}
+
+.chat .chat-message {
+    padding: 20px;
+}
+
+.online,
+.offline,
+.me {
+    margin-right: 2px;
+    font-size: 8px;
+    vertical-align: middle;
+}
+
+.online {
+    color: #86c541;
+}
+
+.offline {
+    color: #e47297;
+}
+
+.me {
+    color: #1d8ecd;
+}
+
+.float-right {
+    float: right;
+}
+
+.clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+}
+
+@media only screen and (max-width: 767px) {
+    .chat-list {
+        height: 465px;
+    }
+    .chat-app .people-list {
+        width: 100%;
+        overflow-x: auto;
+        background: #fff;
+        position: relative;
+        border-bottom: 2px dashed #d1d1d1;
+    }
+
+    .chat-app .people-list.open {
+        left: 0;
+    }
+    .chat-app .chat {
+        margin: 0;
+    }
+    .chat-app .chat .chat-header {
+        border-radius: 0.55rem 0.55rem 0 0;
+    }
+    .chat-app .chat-history {
+        height: 300px;
+        overflow-x: auto;
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 992px) {
+    .chat-app .chat-list {
+        height: 650px;
+        overflow-x: auto;
+    }
+    .chat-app .chat-history {
+        height: 600px;
+        overflow-x: auto;
+    }
+}
+
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1) {
+    .chat-app .chat-list {
+        height: 480px;
+        overflow-x: auto;
+    }
+    .chat-app .chat-history {
+        height: calc(100vh - 350px);
+        overflow-x: auto;
+    }
+}
