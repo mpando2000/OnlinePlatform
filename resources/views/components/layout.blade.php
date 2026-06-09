@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>TPDF E-Learning</title>
-    <link rel="icon" type="image/png" href="{{asset('images/tpdf.png')}}">
+    <title>E-Learning Management System</title>
+    <link rel="icon" type="image/png" href="{{asset('images/elimu.png')}}">
     @vite(['resources/css/app.css','resources/js/app.js'])
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- slider stylesheet -->
@@ -113,4 +113,3 @@
 <script src="{{asset('plugins/datatables-buttons/js/buttons.html5.min.js')}}"></script>
 <script src="{{asset('plugins/datatables-buttons/js/buttons.print.min.js')}}"></script>
 <script src="{{asset('plugins/datatables-buttons/js/buttons.colVis.min.js')}}"></script>
-

@@ -12,8 +12,7 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     public function loginForm(Request $request){
-        $role = $request->query('role');
-        return view('components.login', compact('role'));
+        return redirect()->route('home', ['auth' => 'login']);
     }
 
 
@@ -32,7 +31,9 @@ class AuthController extends Controller
           // Check if the account is inactive
           if ($user->status === 'inactive') {
             Auth::logout();
-            return redirect()->back()->withErrors(['email' => 'Your account is inactive. Please contact the admin.']);
+            return redirect()->back()
+                ->withErrors(['email' => 'Your account is inactive. Please contact the admin.'])
+                ->withInput($request->only('email', '_auth_form'));
         }
         // dd($user);
         $user->login_at = now();
@@ -47,18 +48,15 @@ class AuthController extends Controller
         }
     }
 
-    return redirect()->back()->withErrors([
-        'email' => 'The provided credentials do not match our records.',
-    ]);
+    return redirect()->back()
+        ->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ])
+        ->withInput($request->only('email', '_auth_form'));
 }
 
     public function regForm(){
-        $school_classes = SchoolClass::all();
-        $schools = \App\Models\School::active()->orderBy('name')->get();
-        return view('components.register',[
-            'school_classes' => $school_classes,
-            'schools' => $schools,
-        ]);
+        return redirect()->route('home', ['auth' => 'register']);
     }
     
 
@@ -95,7 +93,7 @@ class AuthController extends Controller
             'status' => 'inactive' 
         ]);
 
-        return redirect()->route('loginForm')->with('success', 'Registration successful. Please wait for admin approval.');
+        return redirect()->route('home', ['auth' => 'login'])->with('success', 'Registration successful. Please wait for admin approval.');
     
     }
 

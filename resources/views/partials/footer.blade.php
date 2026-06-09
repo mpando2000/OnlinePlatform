@@ -2,7 +2,7 @@
 
 <style>
 .footer {
-    background: linear-gradient(135deg, #1e3a5f 0%, #28a745 100%);
+    background: #143b32;
     color: white;
     padding: 60px 0 30px 0;
     margin-top: 80px;
@@ -210,7 +210,7 @@
         <hr class="footer-divider">
         
         <div class="footer-bottom">
-            <p>&copy; {{ date('Y') }} TPDF E-Learning Platform. All rights reserved.</p>
+            <p>&copy; {{ date('Y') }} E-Learning Management System. All rights reserved.</p>
             <p style="margin-top: 10px; font-size: 0.8rem; opacity: 0.8;">Empowering Learners For The Future</p>
         </div>
     </div>
