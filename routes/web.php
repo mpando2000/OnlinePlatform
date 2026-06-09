@@ -230,12 +230,13 @@ Route::middleware(['auth','role:teacher'])->group(function (){
     Route::post('/teacher/quizzes', [QuizController::class, 'storeQuiz'])->name('quizzes.store');
     Route::get('/teacher/quizzes/upload', [QuizController::class,'uploadForm'])->name('quizzes.upload');
     Route::post('/teacher/quizzes/upload', [QuizController::class,'uploadQuiz'])->name('quizzes.upload.post');
+    Route::get('/teacher/quizzes/results', [QuizController::class, 'resultsIndex'])->name('teacher.quizzes.results');
+    Route::get('/teacher/quizzes/{quiz}/file', [QuizController::class, 'viewQuizFile'])->name('quizzes.file');
     Route::get('/teacher/quizzes/{quiz}', [QuizController::class, 'showQuiz'])->name('quizzes.show');
     Route::get('/teacher/quizzes/{quiz}/edit', [QuizController::class, 'editQuiz'])->name('quizzes.edit');
     Route::put('/teacher/quizzes/{quiz}', [QuizController::class, 'updateQuiz'])->name('quizzes.update');
     Route::delete('/teacher/quizzes/{quiz}', [QuizController::class, 'destroyQuiz'])->name('quizzes.destroy');
 
-    Route::get('/teacher/quizzes/results', [QuizController::class, 'resultsIndex'])->name('teacher.quizzes.results');
     Route::get('/teacher/quizzes/{quiz}/results',[QuizController::class, 'viewQuizResults'])->name('view.quizzes.results');
     Route::get('/teacher/quizzes/{quiz}/upload-results', [QuizController::class,'uploadQuizResultsForm'])->name('quizzes.uploadResultsForm');
     Route::get('/teacher/quizzes/{quiz}/download-template', [QuizController::class, 'downloadTemplate'])->name('quizzes.downloadTemplate');
@@ -269,6 +270,7 @@ Route::middleware(['auth','role:student'])->group(function (){
 
     //quizzes
     Route::get('/student/quizzes', [QuizController::class, 'studentIndex'])->name('student.quizzes');
+    Route::get('/student/quizzes/{quiz}/file', [QuizController::class, 'viewQuizFile'])->name('student.quizzes.file');
     Route::get('/student/quizzes/{quiz}/start', [QuizController::class, 'takeQuiz'])->name('quizzes.start');
 
     // Route to submit the quiz answers

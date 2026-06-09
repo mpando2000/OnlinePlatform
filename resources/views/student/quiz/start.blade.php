@@ -116,7 +116,7 @@
                                                 Download the quiz file, complete it according to the instructions, 
                                                 and submit your answers before the time expires.
                                             </p>
-                                            <a href="{{ asset('storage/quizzes/' . $quiz->quiz_file) }}" 
+                                            <a href="{{ route('student.quizzes.file', $quiz->id) }}" 
                                                class="btn btn-primary btn-lg mb-3" 
                                                target="_blank">
                                                 <i class="fas fa-download mr-2"></i>

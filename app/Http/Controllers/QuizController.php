@@ -13,6 +13,7 @@ use App\Imports\QuizResultsImport;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use App\Exports\QuizTemplateExport;
 
 
@@ -50,6 +51,21 @@ class QuizController extends Controller
     {
         $quiz->load('questions'); 
     return view('teacher.quiz.show', compact('quiz'));
+    }
+
+    public function viewQuizFile(Quiz $quiz)
+    {
+        if (!$quiz->quiz_file) {
+            abort(404, 'Quiz file not found.');
+        }
+
+        $path = 'quizzes/' . $quiz->quiz_file;
+
+        if (!Storage::disk('public')->exists($path)) {
+            abort(404, 'Quiz file not found.');
+        }
+
+        return response()->file(Storage::disk('public')->path($path));
     }
 
     public function adminShowQuiz(Quiz $quiz)
