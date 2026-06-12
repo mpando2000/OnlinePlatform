@@ -465,104 +465,6 @@
         text-align: center;
     }
 
-    .auth-modal {
-        z-index: 20000 !important;
-    }
-
-    .modal-backdrop {
-        z-index: 19990 !important;
-    }
-
-    .auth-modal .modal-content {
-        border: 0;
-        border-radius: 8px;
-        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
-    }
-
-    .auth-modal .modal-header {
-        background: #0f3d34;
-        border-bottom: 0;
-        color: #fff;
-    }
-
-    .auth-modal .modal-title {
-        color: #fff;
-        font-weight: 900;
-    }
-
-    .auth-modal .close {
-        background: transparent;
-        border: 0;
-        color: #fff;
-        font-size: 28px;
-        line-height: 1;
-        opacity: 1;
-    }
-
-    .auth-form-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 14px;
-    }
-
-    .auth-field {
-        margin-bottom: 15px;
-    }
-
-    .auth-field label {
-        color: #263541;
-        display: block;
-        font-size: 13px;
-        font-weight: 800;
-        margin-bottom: 6px;
-    }
-
-    .auth-field input,
-    .auth-field select {
-        border: 1px solid #cfd9e2;
-        border-radius: 8px;
-        color: #16242f;
-        height: 45px;
-        padding: 10px 12px;
-        width: 100%;
-    }
-
-    .auth-field input:focus,
-    .auth-field select:focus {
-        border-color: #0f7a64;
-        box-shadow: 0 0 0 3px rgba(15, 122, 100, 0.14);
-        outline: none;
-    }
-
-    .auth-submit {
-        background: #0f3d34;
-        border: 0;
-        border-radius: 8px;
-        color: #fff;
-        font-weight: 900;
-        min-height: 45px;
-        padding: 10px 18px;
-        width: 100%;
-    }
-
-    .auth-submit:hover {
-        background: #126451;
-    }
-
-    .auth-switch {
-        background: transparent;
-        border: 0;
-        color: #0f7a64;
-        font-weight: 900;
-        padding: 0;
-    }
-
-    .text-danger {
-        display: block;
-        font-size: 13px;
-        margin-top: 6px;
-    }
-
     @media (max-width: 991px) {
         .home-hero {
             min-height: auto;
@@ -612,8 +514,7 @@
             font-size: 17px;
         }
 
-        .role-tabs,
-        .auth-form-grid {
+        .role-tabs {
             grid-template-columns: 1fr;
         }
 
@@ -644,12 +545,12 @@
             </div>
 
             <div class="nav-actions">
-                <button type="button" class="btn-home btn-outline-home" data-toggle="modal" data-target="#loginModal">
+                <a href="{{ route('loginForm') }}" class="btn-home btn-outline-home">
                     <i class="fas fa-sign-in-alt"></i> Login
-                </button>
-                <button type="button" class="btn-home btn-primary-home" data-toggle="modal" data-target="#registerModal">
+                </a>
+                <a href="{{ route('regForm') }}" class="btn-home btn-primary-home">
                     <i class="fas fa-user-plus"></i> Register
-                </button>
+                </a>
             </div>
         </nav>
 
@@ -659,9 +560,9 @@
                 <h1>Learning that feels connected.</h1>
                 <p>Assignments, quizzes, online sessions, classes, and learning materials are brought together in one calm portal for students, teachers, and administrators.</p>
                 <div class="hero-actions">
-                    <button type="button" class="btn-home btn-primary-home" data-toggle="modal" data-target="#loginModal">
+                    <a href="{{ route('loginForm') }}" class="btn-home btn-primary-home">
                         <i class="fas fa-unlock"></i> Start Learning
-                    </button>
+                    </a>
                     <a href="#features" class="btn-home btn-outline-home">
                         <i class="fas fa-layer-group"></i> Explore Features
                     </a>
@@ -727,9 +628,9 @@
                     <h2>Everything for daily learning</h2>
                     <p>A lighter, clearer interface for the work students and teachers do most often.</p>
                 </div>
-                <button type="button" class="btn-home btn-primary-home" data-toggle="modal" data-target="#registerModal">
+                <a href="{{ route('regForm') }}" class="btn-home btn-primary-home">
                     <i class="fas fa-user-graduate"></i> Join Platform
-                </button>
+                </a>
             </div>
 
             <div class="feature-grid">
@@ -774,162 +675,6 @@
     <footer class="home-footer">
         &copy; {{ date('Y') }} E-Learning Management System. All rights reserved.
     </footer>
-</div>
-
-<div class="modal fade auth-modal" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="loginModalLabel">Login</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
-            </div>
-            <div class="modal-body p-4">
-                @if(session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
-                @endif
-
-                <form method="POST" action="{{ route('login') }}" id="homeLoginForm">
-                    @csrf
-                    <input type="hidden" name="_auth_form" value="login">
-
-                    <div class="auth-field">
-                        <label for="login_email">Email Address</label>
-                        <input type="email" name="email" id="login_email" value="{{ old('_auth_form') === 'login' ? old('email') : '' }}" required>
-                        @if(old('_auth_form') === 'login')
-                            @error('email')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        @endif
-                    </div>
-
-                    <div class="auth-field">
-                        <label for="login_password">Password</label>
-                        <input type="password" name="password" id="login_password" required>
-                        @if(old('_auth_form') === 'login')
-                            @error('password')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        @endif
-                    </div>
-
-                    <div class="auth-field d-flex align-items-center">
-                        <input type="checkbox" id="remember" name="remember" style="width:18px;height:18px;margin-right:10px;">
-                        <label for="remember" style="margin:0;">Remember me</label>
-                    </div>
-
-                    <button type="submit" class="auth-submit">Sign In</button>
-                </form>
-
-                <div class="text-center mt-3">
-                    <span>Don't have an account?</span>
-                    <button type="button" class="auth-switch" data-switch-auth="register">Create account</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade auth-modal" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="registerModalLabel">Create Account</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
-            </div>
-            <div class="modal-body p-4">
-                <form method="POST" action="{{ route('register') }}" id="homeRegisterForm">
-                    @csrf
-                    <input type="hidden" name="_auth_form" value="register">
-
-                    <div class="auth-form-grid">
-                        <div class="auth-field">
-                            <label for="firstname">First Name</label>
-                            <input type="text" name="firstname" id="firstname" value="{{ old('_auth_form') === 'register' ? old('firstname') : '' }}" required>
-                            @if(old('_auth_form') === 'register') @error('firstname') <span class="text-danger">{{ $message }}</span> @enderror @endif
-                        </div>
-                        <div class="auth-field">
-                            <label for="secondname">Second Name</label>
-                            <input type="text" name="secondname" id="secondname" value="{{ old('_auth_form') === 'register' ? old('secondname') : '' }}" required>
-                            @if(old('_auth_form') === 'register') @error('secondname') <span class="text-danger">{{ $message }}</span> @enderror @endif
-                        </div>
-                        <div class="auth-field">
-                            <label for="lastname">Last Name</label>
-                            <input type="text" name="lastname" id="lastname" value="{{ old('_auth_form') === 'register' ? old('lastname') : '' }}" required>
-                            @if(old('_auth_form') === 'register') @error('lastname') <span class="text-danger">{{ $message }}</span> @enderror @endif
-                        </div>
-                    </div>
-
-                    <div class="auth-form-grid">
-                        <div class="auth-field">
-                            <label for="register_email">Email</label>
-                            <input type="email" name="email" id="register_email" value="{{ old('_auth_form') === 'register' ? old('email') : '' }}" required>
-                            @if(old('_auth_form') === 'register') @error('email') <span class="text-danger">{{ $message }}</span> @enderror @endif
-                        </div>
-                        <div class="auth-field">
-                            <label for="register_password">Password</label>
-                            <input type="password" name="password" id="register_password" required>
-                            @if(old('_auth_form') === 'register') @error('password') <span class="text-danger">{{ $message }}</span> @enderror @endif
-                        </div>
-                        <div class="auth-field">
-                            <label for="password_confirmation">Confirm Password</label>
-                            <input type="password" name="password_confirmation" id="password_confirmation" required>
-                            @if(old('_auth_form') === 'register') @error('password_confirmation') <span class="text-danger">{{ $message }}</span> @enderror @endif
-                        </div>
-                    </div>
-
-                    <div class="auth-form-grid">
-                        <div class="auth-field">
-                            <label for="gender">Gender</label>
-                            <select name="gender" id="gender" required>
-                                <option value="" selected disabled>Select Gender</option>
-                                <option value="male" @selected(old('_auth_form') === 'register' && old('gender') === 'male')>Male</option>
-                                <option value="female" @selected(old('_auth_form') === 'register' && old('gender') === 'female')>Female</option>
-                                <option value="other" @selected(old('_auth_form') === 'register' && old('gender') === 'other')>Other</option>
-                            </select>
-                            @if(old('_auth_form') === 'register') @error('gender') <span class="text-danger">{{ $message }}</span> @enderror @endif
-                        </div>
-                        <div class="auth-field">
-                            <label for="school_id">School</label>
-                            <select name="school_id" id="school_id" required>
-                                <option value="" selected disabled>Select School</option>
-                                @foreach($schools as $school)
-                                    <option value="{{ $school->id }}" @selected(old('_auth_form') === 'register' && (string) old('school_id') === (string) $school->id)>{{ $school->name }}</option>
-                                @endforeach
-                            </select>
-                            @if(old('_auth_form') === 'register') @error('school_id') <span class="text-danger">{{ $message }}</span> @enderror @endif
-                        </div>
-                        <div class="auth-field">
-                            <label for="role">Role</label>
-                            <select id="role" name="role" required>
-                                <option value="" selected disabled>Select Role</option>
-                                <option value="teacher" @selected(old('_auth_form') === 'register' && old('role') === 'teacher')>Teacher</option>
-                                <option value="student" @selected(old('_auth_form') === 'register' && old('role') === 'student')>Student</option>
-                            </select>
-                            @if(old('_auth_form') === 'register') @error('role') <span class="text-danger">{{ $message }}</span> @enderror @endif
-                        </div>
-                    </div>
-
-                    <div class="auth-field" id="classField">
-                        <label for="class_id">Class</label>
-                        <select id="class_id" name="class_id">
-                            <option value="" selected disabled>Select Class</option>
-                            @foreach($school_classes as $school_class)
-                                <option value="{{ $school_class->id }}" @selected(old('_auth_form') === 'register' && (string) old('class_id') === (string) $school_class->id)>{{ $school_class->name }}</option>
-                            @endforeach
-                        </select>
-                        @if(old('_auth_form') === 'register') @error('class_id') <span class="text-danger">{{ $message }}</span> @enderror @endif
-                    </div>
-
-                    <button type="submit" class="auth-submit">Create Account</button>
-                </form>
-
-                <div class="text-center mt-3">
-                    <span>Already have an account?</span>
-                    <button type="button" class="auth-switch" data-switch-auth="login">Sign in</button>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 <script>
@@ -990,81 +735,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    const loginModalElement = document.getElementById('loginModal');
-    const registerModalElement = document.getElementById('registerModal');
-    const roleSelect = document.getElementById('role');
-    const classField = document.getElementById('classField');
-    const classSelect = document.getElementById('class_id');
-
-    function showModal(modalElement) {
-        if (!modalElement) return;
-
-        if (window.jQuery && typeof $(modalElement).modal === 'function') {
-            $(modalElement).modal({
-                backdrop: true,
-                keyboard: true,
-                show: true
-            });
-            return;
-        }
-
-        modalElement.classList.add('show');
-        modalElement.style.display = 'block';
-        modalElement.removeAttribute('aria-hidden');
-        document.body.classList.add('modal-open');
-    }
-
-    function hideModal(modalElement) {
-        if (!modalElement) return;
-
-        if (window.jQuery && typeof $(modalElement).modal === 'function') {
-            $(modalElement).modal('hide');
-            return;
-        }
-
-        modalElement.classList.remove('show');
-        modalElement.style.display = 'none';
-        modalElement.setAttribute('aria-hidden', 'true');
-    }
-
-    function toggleClassField() {
-        if (!roleSelect || !classField || !classSelect) return;
-
-        if (roleSelect.value === 'student') {
-            classField.style.display = 'block';
-            classSelect.setAttribute('required', 'required');
-        } else {
-            classField.style.display = 'none';
-            classSelect.removeAttribute('required');
-            classSelect.value = '';
-        }
-    }
-
-    if (roleSelect) {
-        roleSelect.addEventListener('change', toggleClassField);
-        toggleClassField();
-    }
-
-    document.querySelectorAll('[data-switch-auth]').forEach(function(button) {
-        button.addEventListener('click', function() {
-            if (button.dataset.switchAuth === 'register') {
-                hideModal(loginModalElement);
-                showModal(registerModalElement);
-            } else {
-                hideModal(registerModalElement);
-                showModal(loginModalElement);
-            }
-        });
-    });
-
-    const authQuery = new URLSearchParams(window.location.search).get('auth');
-    const oldForm = "{{ old('_auth_form') }}";
-
-    if (authQuery === 'register' || oldForm === 'register') {
-        showModal(registerModalElement);
-    } else if (authQuery === 'login' || oldForm === 'login' || "{{ session('success') ? '1' : '' }}") {
-        showModal(loginModalElement);
-    }
 });
 </script>
 </x-layout>

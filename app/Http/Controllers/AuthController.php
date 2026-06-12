@@ -4,15 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Subject;
+use App\Models\School;
 use App\Models\SchoolClass;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
     public function loginForm(Request $request){
-        return redirect()->route('home', ['auth' => 'login']);
+        return view('components.login');
     }
 
 
@@ -56,7 +59,10 @@ class AuthController extends Controller
 }
 
     public function regForm(){
-        return redirect()->route('home', ['auth' => 'register']);
+        $school_classes = SchoolClass::all();
+        $schools = School::active()->orderBy('name')->get();
+
+        return view('components.register', compact('school_classes', 'schools'));
     }
     
 
@@ -93,8 +99,57 @@ class AuthController extends Controller
             'status' => 'inactive' 
         ]);
 
-        return redirect()->route('home', ['auth' => 'login'])->with('success', 'Registration successful. Please wait for admin approval.');
+        return redirect()->route('loginForm')->with('success', 'Registration successful. Please wait for admin approval.');
     
+    }
+
+    public function forgotPasswordForm()
+    {
+        return view('components.forgot_password');
+    }
+
+    public function sendPasswordResetLink(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $status = Password::sendResetLink($request->only('email'));
+
+        return $status === Password::RESET_LINK_SENT
+            ? back()->with('status', __($status))
+            : back()->withErrors(['email' => __($status)])->onlyInput('email');
+    }
+
+    public function resetPasswordForm(Request $request, string $token)
+    {
+        return view('components.reset_auth_password', [
+            'token' => $token,
+            'email' => $request->query('email'),
+        ]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|string|confirmed|min:8',
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function (User $user, string $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password),
+                    'remember_token' => Str::random(60),
+                ])->save();
+            }
+        );
+
+        return $status === Password::PASSWORD_RESET
+            ? redirect()->route('loginForm')->with('success', __($status))
+            : back()->withErrors(['email' => __($status)])->onlyInput('email');
     }
 
     public function logout(Request $request){

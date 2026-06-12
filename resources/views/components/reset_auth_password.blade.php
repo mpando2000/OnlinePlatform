@@ -2,40 +2,31 @@
 @include('components.auth_styles')
 
 <main class="auth-page">
-    <section class="auth-shell" aria-labelledby="loginTitle">
+    <section class="auth-shell" aria-labelledby="resetTitle">
         <div class="auth-brand">
             <img class="auth-logo" src="{{ asset('images/elimu.png') }}" alt="E-Learning logo">
-            <h1 id="loginTitle">Welcome back</h1>
-            <p>Enter your email and password to sign in.</p>
+            <h1 id="resetTitle">Create new password</h1>
+            <p>Use a strong password with at least 8 characters.</p>
         </div>
 
         <div class="auth-card">
-            @if(session('success'))
-                <div class="auth-alert auth-alert-success">{{ session('success') }}</div>
-            @endif
-
-            @if(session('status'))
-                <div class="auth-alert auth-alert-success">{{ session('status') }}</div>
-            @endif
-
-            <form method="POST" action="{{ route('login') }}" id="loginForm">
+            <form method="POST" action="{{ route('password.update') }}">
                 @csrf
+
+                <input type="hidden" name="token" value="{{ $token }}">
 
                 <div class="auth-field">
                     <label for="email">Email</label>
-                    <input type="email" name="email" id="email" placeholder="name@example.com" value="{{ old('email') }}" required autofocus>
+                    <input type="email" name="email" id="email" value="{{ old('email', $email) }}" required autofocus>
                     @error('email')
                         <span class="auth-error">{{ $message }}</span>
                     @enderror
                 </div>
 
                 <div class="auth-field auth-password">
-                    <div style="display:flex;justify-content:space-between;gap:12px;">
-                        <label for="password">Password</label>
-                        <a class="auth-link" href="{{ route('password.request') }}">Forgot password?</a>
-                    </div>
+                    <label for="password">New Password</label>
                     <div class="auth-input-wrap">
-                        <input type="password" name="password" id="password" placeholder="Enter your password" required>
+                        <input type="password" name="password" id="password" required minlength="8">
                         <button type="button" class="auth-eye" data-toggle-password="password" aria-label="Show password">
                             <i class="fas fa-eye"></i>
                         </button>
@@ -45,28 +36,28 @@
                     @enderror
                 </div>
 
-                <div class="auth-options">
-                    <label class="auth-check" for="remember">
-                        <input type="checkbox" id="remember" name="remember">
-                        <span>Trust this device</span>
-                    </label>
+                <div class="auth-field auth-password">
+                    <label for="password_confirmation">Confirm New Password</label>
+                    <div class="auth-input-wrap">
+                        <input type="password" name="password_confirmation" id="password_confirmation" required minlength="8">
+                        <button type="button" class="auth-eye" data-toggle-password="password_confirmation" aria-label="Show password confirmation">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    @error('password_confirmation')
+                        <span class="auth-error">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <button type="submit" class="auth-btn">
-                    <i class="fas fa-sign-in-alt"></i> Sign in
+                    <i class="fas fa-key"></i> Reset Password
                 </button>
             </form>
 
-            <div class="auth-divider">Or</div>
-
             <div class="auth-footer-link">
-                Don't have an account?
-                <a href="{{ route('regForm') }}">Sign up</a>
+                Back to
+                <a href="{{ route('loginForm') }}">sign in</a>
             </div>
-        </div>
-
-        <div class="auth-home">
-            <a class="auth-link" href="{{ route('home') }}"><i class="fas fa-arrow-left"></i> Back to home</a>
         </div>
     </section>
 </main>
