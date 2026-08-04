@@ -862,7 +862,7 @@ body.sidebar-collapse.sidebar-hover-open .main-header {
                                 </div>
                                 <div class="info">
                                 {{-- <a href="#" class="d-block">Administrator</a> --}}
-                                <a href="#" class="d-block">{{ auth()->user()->firstname }} {{ auth()->user()->lastname }}</a>
+                                <a href="{{ route('profile.show') }}" class="d-block">{{ auth()->user()->firstname }} {{ auth()->user()->lastname }}</a>
                                 </div>
                             </div>
 
@@ -881,6 +881,12 @@ body.sidebar-collapse.sidebar-hover-open .main-header {
                                 <a class="nav-link" data-tooltip="Dashboard" href="{{ route('admin.dashboard') }}">
                                     <span class="nav-icon fas fa-tachometer-alt"></span>
                                     <p>Dashboard</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-tooltip="My Profile" href="{{ route('profile.show') }}">
+                                    <span class="nav-icon fas fa-user-circle"></span>
+                                    <p>My Profile</p>
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -957,7 +963,7 @@ body.sidebar-collapse.sidebar-hover-open .main-header {
 
                                 </div>
                                 <div class="info">
-                                <a href="#" class="d-block">{{ auth()->user()->firstname }}  {{auth()->user()->lastname}}</a>
+                                <a href="{{ route('profile.show') }}" class="d-block">{{ auth()->user()->firstname }}  {{auth()->user()->lastname}}</a>
                                 </div>
                             </div>
 
@@ -977,6 +983,12 @@ body.sidebar-collapse.sidebar-hover-open .main-header {
                                         href="{{ route('teacher.dashboard') }}">
                                         <span class="nav-icon fa fa-tachometer "></span>
                                         <p>Dashboard</p>
+                                    </a>
+                                </li><br>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('profile.show') }}">
+                                        <span class="nav-icon fa fa-user-circle"></span>
+                                        <p>My Profile</p>
                                     </a>
                                 </li><br>
                                 <li class="nav-item">
@@ -1070,7 +1082,7 @@ body.sidebar-collapse.sidebar-hover-open .main-header {
 
                             </div>
                             <div class="info">
-                                <a href="#" class="d-block">{{ auth()->user()->firstname }} {{auth()->user()->lastname}}</a>
+                                <a href="{{ route('profile.show') }}" class="d-block">{{ auth()->user()->firstname }} {{auth()->user()->lastname}}</a>
                                 </div>
                             </div>
 
@@ -1092,6 +1104,12 @@ body.sidebar-collapse.sidebar-hover-open .main-header {
                                 <p>Dashboard</p>
                             </a>
                         </li><br>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('profile.show') }}">
+                                    <span class="nav-icon fa fa-user-circle"></span>
+                                    <p>My Profile</p>
+                                </a>
+                            </li><br>
                             <li class="nav-item">
                                 <a class="nav-link"
                                     href="{{ route('student.class') }}">

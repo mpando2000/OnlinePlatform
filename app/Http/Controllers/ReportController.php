@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\SchoolClass;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class ReportController extends Controller
 {
@@ -15,14 +16,14 @@ class ReportController extends Controller
 
 
     public function userReport(){
-        $users = User::all();
+        $users = User::query()->visibleToAdmin(Auth::user())->get();
         return view ('admin.userReport', [
             'users' => $users
         ]);
     }
 
     public function userReportPrint(){
-        $users = User::all();
+        $users = User::query()->visibleToAdmin(Auth::user())->get();
         return view ('admin.userReportPrint', [
             'users' => $users
         ]);

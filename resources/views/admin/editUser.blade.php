@@ -55,6 +55,30 @@
                         <label for="email">Email Address</label>
                         <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" required>
                     </div>
+                    @if($currentAdmin->canManageAllSchools())
+                        <div class="field">
+                            <label for="school_id">School</label>
+                            <select name="school_id" id="school_id" required>
+                                @foreach($schools as $school)
+                                    <option value="{{ $school->id }}" @selected((string) old('school_id', $user->school_id) === (string) $school->id)>{{ $school->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @if($user->role === 'admin' && ! $user->is($currentAdmin))
+                            <div class="field permission-field">
+                                <label for="can_manage_all_schools">Cross-school permission</label>
+                                <label class="permission-check">
+                                    <input type="checkbox" id="can_manage_all_schools" name="can_manage_all_schools" value="1" @checked(old('can_manage_all_schools', $user->can_manage_all_schools))>
+                                    Allow this admin to manage users in all schools
+                                </label>
+                            </div>
+                        @elseif($user->role === 'admin' && $user->canManageAllSchools())
+                            <div class="field permission-field">
+                                <label>Cross-school permission</label>
+                                <small>Your own all-school permission must be changed by another all-school administrator.</small>
+                            </div>
+                        @endif
+                    @endif
                 </div>
 
                 <div class="form-actions">
@@ -109,7 +133,7 @@
     font-weight: 800;
     margin-bottom: 6px;
 }
-.field input, .form-control {
+.field input, .field select, .form-control {
     border: 1px solid #d1d5db;
     border-radius: 6px;
     color: #172033;
@@ -117,11 +141,14 @@
     padding: 7px 10px;
     width: 100%;
 }
-.field input:focus, .form-control:focus {
+.field input:focus, .field select:focus, .form-control:focus {
     border-color: #123d35;
     box-shadow: 0 0 0 3px rgba(18, 61, 53, 0.12);
     outline: 0;
 }
+.permission-field { grid-column: span 2; }
+.permission-check { align-items: center; display: flex !important; font-weight: 600 !important; gap: 9px; min-height: 38px; }
+.permission-check input { height: 18px; width: 18px; }
 .form-actions { display: flex; gap: 8px; margin-top: 18px; }
 .ui-btn {
     align-items: center;

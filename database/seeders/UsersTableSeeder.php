@@ -23,7 +23,8 @@ class UsersTableSeeder extends Seeder
             'password' => Hash::make('admin1234'),
             'role' => 'admin',
             'gender' => 'Male',
-            'status' => 'active'
+            'status' => 'active',
+            'can_manage_all_schools' => true,
         ]);
 
    

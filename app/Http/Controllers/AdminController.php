@@ -11,31 +11,68 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use App\Models\TeacherSubjectClass;
 use App\Models\TeacherClassSubjectPivot;
 use App\Models\OnlineSession;
 
 class AdminController extends Controller
 {
-  
+    private function currentAdmin(): User
+    {
+        /** @var User $admin */
+        $admin = Auth::user();
+
+        return $admin;
+    }
+
+    private function authorizeUserManagement(User $user): void
+    {
+        abort_unless($this->currentAdmin()->canManageUser($user), 403, 'You can only manage users from your school.');
+    }
+
+    private function manageableSchools()
+    {
+        $admin = $this->currentAdmin();
+
+        return School::query()
+            ->when(
+                ! $admin->canManageAllSchools(),
+                fn ($query) => $query->whereKey($admin->school_id ?? 0),
+                fn ($query) => $query->where('status', 'active')
+            )
+            ->orderBy('name')
+            ->get();
+    }
+
+    private function schoolValidationRules(): array
+    {
+        return [
+            'required',
+            Rule::exists('schools', 'id'),
+            Rule::in($this->manageableSchools()->pluck('id')->all()),
+        ];
+    }
 
     public function index(){
-        $users = User::all();
+        $admin = $this->currentAdmin();
+        $visibleUsers = User::query()->visibleToAdmin($admin);
+        $users = (clone $visibleUsers)->get();
         $classes = SchoolClass::all();
-        $userCount = User::count();
+        $userCount = (clone $visibleUsers)->count();
         $classCount = SchoolClass::count();
-        $teachersCount = User::where('role', 'teacher')->count();
-        $studentsCount = User::where('role', 'student')->count();
-        $inactiveCount = User::where('status', 'inactive')->count();
+        $teachersCount = (clone $visibleUsers)->where('role', 'teacher')->count();
+        $studentsCount = (clone $visibleUsers)->where('role', 'student')->count();
+        $inactiveCount = (clone $visibleUsers)->where('status', 'inactive')->count();
         
         // Enhanced statistics
-        $schoolsCount = School::where('status', 'active')->count();
+        $schoolsCount = $this->manageableSchools()->count();
         $quizzesCount = Quiz::count();
-        $recentRegistrations = User::where('created_at', '>=', now()->subDays(7))->count();
+        $recentRegistrations = (clone $visibleUsers)->where('created_at', '>=', now()->subDays(7))->count();
         
         // School distribution statistics
         $schoolStats = [];
-        $schools = School::where('status', 'active')->get();
+        $schools = $this->manageableSchools();
         
         foreach($schools as $school) {
             $studentCount = User::where('school_id', $school->id)->where('role', 'student')->count();
@@ -52,7 +89,7 @@ class AdminController extends Controller
         }
         
         // Add legacy school users
-        $legacyUsers = User::whereNull('school_id')->whereNotNull('school')->get();
+        $legacyUsers = (clone $visibleUsers)->whereNull('school_id')->whereNotNull('school')->get();
         $legacySchools = $legacyUsers->groupBy('school');
         
         foreach($legacySchools as $schoolName => $users) {
@@ -71,8 +108,8 @@ class AdminController extends Controller
         }
         
         // Recent activity
-        $recentUsers = User::orderBy('created_at', 'desc')->limit(5)->get();
-        $activeUsers = User::where('login_at', '>=', now()->subDays(1))->count();
+        $recentUsers = (clone $visibleUsers)->orderBy('created_at', 'desc')->limit(5)->get();
+        $activeUsers = (clone $visibleUsers)->where('login_at', '>=', now()->subDays(1))->count();
         
         return view('admin.dashboard', [
             'stat' => [
@@ -93,25 +130,24 @@ class AdminController extends Controller
         ]);
     }
     public function users(){
-        
-        $users = User::with('schoolClass')->get();
-        
-        // Manually load school relationships to avoid eager loading issues
-        foreach($users as $user) {
-            if($user->school_id) {
-                $user->school_relation = School::find($user->school_id);
-            }
-        }
-        
-        $schools = School::active()->orderBy('name')->get();
+        $admin = $this->currentAdmin();
+        $users = User::query()
+            ->visibleToAdmin($admin)
+            ->with(['schoolClass', 'schoolRelation'])
+            ->orderBy('role')
+            ->orderBy('firstname')
+            ->get();
+        $schools = $this->manageableSchools();
+
         return view ('admin.users', [
             'users' => $users,
-            'schools' => $schools
+            'schools' => $schools,
+            'currentAdmin' => $admin,
         ]);
     }
     public function userForm(){
         $school_classes = SchoolClass::all();
-        $schools = School::active()->orderBy('name')->get();
+        $schools = $this->manageableSchools();
         return view('admin.userForm',[
             'school_classes' => $school_classes,
             'schools' => $schools,
@@ -127,13 +163,15 @@ class AdminController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' =>'required|string|confirmed|min:8',
             'gender'=>'required|in:male,female,other',
-            'school_id'=>'required|exists:schools,id',
+            'school_id' => $this->schoolValidationRules(),
             'role' => 'required|in:teacher,student',
             'class_id' => 'required_if:role,student|exists:school_classes,id'
 
         ]);
 
 
+        $school = School::find($inputData['school_id']);
+        $inputData['school'] = $school?->code;
         User::create($inputData);
         return redirect(route('admin.users'));
        
@@ -145,10 +183,8 @@ class AdminController extends Controller
 
 public function viewUser(User $user)
 {
-    // Manually load school relationship to avoid eager loading issues
-    if($user->school_id) {
-        $user->school_relation = School::find($user->school_id);
-    }
+    $this->authorizeUserManagement($user);
+    $user->load('schoolRelation');
 
     // Get the teacher's classes and subjects using the pivot table
     $assignedClasses = DB::table('teacher_class_subject_pivots')
@@ -167,8 +203,12 @@ public function viewUser(User $user)
 
 
     public function editForm(User $user){
+        $this->authorizeUserManagement($user);
+
         return view('admin.editUser', [
-            'user' =>$user
+            'user' => $user,
+            'schools' => $this->manageableSchools(),
+            'currentAdmin' => $this->currentAdmin(),
         ]);
     }
 
@@ -197,6 +237,8 @@ public function viewUser(User $user)
 
     public function updatedUser(Request $request, User $user)
     {
+        $this->authorizeUserManagement($user);
+
         $validatedData = $request->validate([
             'firstname' => 'required|string|max:255',
             'secondname' => 'required|string|max:255',
@@ -205,6 +247,20 @@ public function viewUser(User $user)
             'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'captured_image' => 'nullable|string',
         ]);
+
+        if ($this->currentAdmin()->canManageAllSchools()) {
+            $adminData = $request->validate([
+                'school_id' => $this->schoolValidationRules(),
+                'can_manage_all_schools' => 'sometimes|boolean',
+            ]);
+
+            $validatedData['school_id'] = $adminData['school_id'];
+            $validatedData['school'] = School::find($adminData['school_id'])?->code;
+
+            if ($user->role === 'admin' && ! $user->is($this->currentAdmin())) {
+                $validatedData['can_manage_all_schools'] = $request->boolean('can_manage_all_schools');
+            }
+        }
 
         // $user = auth()->user();
         // if ($request->hasFile('profile_image')) {
@@ -254,6 +310,8 @@ public function viewUser(User $user)
 
     
     public function destroy(Request $request, User $user){
+        $this->authorizeUserManagement($user);
+
         // Prevent deletion when the user is referenced by online sessions
         $hasSessions = OnlineSession::where('teacher_id', $user->id)->exists();
 
@@ -276,7 +334,12 @@ public function viewUser(User $user)
 
     public function updateUserStatus(Request $request, User $user)
     {
-        $user->status = $request->status;
+        $this->authorizeUserManagement($user);
+        $validated = $request->validate([
+            'status' => 'required|in:active,inactive',
+        ]);
+
+        $user->status = $validated['status'];
         $user->save();
 
         return redirect()->back()->with('success', 'User status updated successfully.');
@@ -287,6 +350,8 @@ public function viewUser(User $user)
     public function resetPassword($id)
     {
         $user = User::findOrFail($id);
+        $this->authorizeUserManagement($user);
+
         return view('components.reset_password', compact('user'));
     }
 
@@ -297,6 +362,7 @@ public function viewUser(User $user)
         ]);
 
         $user = User::findOrFail($id);
+        $this->authorizeUserManagement($user);
         $user->password = Hash::make($request->password);
         $user->save();
 
@@ -309,8 +375,10 @@ public function viewUser(User $user)
     public function createAdminUser()
     {
         $school_classes = SchoolClass::all();
-        $schools = School::active()->orderBy('name')->get();
-        return view('admin.adminUsers.create',compact('school_classes', 'schools'));
+        $schools = $this->manageableSchools();
+        $currentAdmin = $this->currentAdmin();
+
+        return view('admin.adminUsers.create', compact('school_classes', 'schools', 'currentAdmin'));
     }
 
     public function storeAdminUser(Request $request)
@@ -323,11 +391,17 @@ public function viewUser(User $user)
             'email' => 'required|email|unique:users',
             'gender' => 'required|in:male,female',
             'password' => 'required|confirmed|min:8',
-            'school_id'=>'required|exists:schools,id',
+            'school_id' => $this->schoolValidationRules(),
             'role' => 'required|in:admin',
-            'class_id' => 'required_if:role,student|exists:school_classes,id'
+            'class_id' => 'required_if:role,student|exists:school_classes,id',
+            'can_manage_all_schools' => 'sometimes|boolean',
 
         ]);
+
+        $school = School::find($inputData['school_id']);
+        $inputData['school'] = $school?->code;
+        $inputData['can_manage_all_schools'] = $this->currentAdmin()->canManageAllSchools()
+            && $request->boolean('can_manage_all_schools');
 
         User::create($inputData);
 
@@ -341,6 +415,8 @@ public function viewUser(User $user)
         $teacher = User::with(['teacherSubjects' => function($query) {
             $query->withPivot('class_id', 'created_at', 'updated_at');
         }])->findOrFail($userId);
+        $this->authorizeUserManagement($teacher);
+        abort_unless($teacher->role === 'teacher', 404);
         
         $classes = SchoolClass::all();
         $subjects = Subject::all();
@@ -352,6 +428,10 @@ public function viewUser(User $user)
 
 public function storeClassSubjectAssignment(Request $request, $teacherId)
 {
+    $teacher = User::findOrFail($teacherId);
+    $this->authorizeUserManagement($teacher);
+    abort_unless($teacher->role === 'teacher', 404);
+
     $validated = $request->validate([
         'classes.*' => 'required|exists:school_classes,id',
         'subjects.*' => 'required|exists:subjects,id',
@@ -387,6 +467,10 @@ public function storeClassSubjectAssignment(Request $request, $teacherId)
 
 public function removeClassAssignment(Request $request, $teacherId)
 {
+    $teacher = User::findOrFail($teacherId);
+    $this->authorizeUserManagement($teacher);
+    abort_unless($teacher->role === 'teacher', 404);
+
     $request->validate([
         'class_id' => 'required|exists:school_classes,id',
     ]);
@@ -405,4 +489,3 @@ public function removeClassAssignment(Request $request, $teacherId)
 
 
 }
-

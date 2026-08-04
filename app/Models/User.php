@@ -7,6 +7,7 @@ use App\Models\Role;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Builder;
 use Carbon\Carbon;
 
 
@@ -33,6 +34,7 @@ class User extends Authenticatable
         'gender',
         'school',
         'school_id',
+        'can_manage_all_schools',
         'role',
         'class_id',
         'academic_year',
@@ -69,6 +71,44 @@ class User extends Authenticatable
 public function school()
 {
     return $this->belongsTo(School::class, 'school_id');
+}
+
+public function schoolRelation()
+{
+    return $this->belongsTo(School::class, 'school_id');
+}
+
+public function canManageAllSchools(): bool
+{
+    return $this->role === 'admin' && $this->can_manage_all_schools;
+}
+
+public function canManageUser(User $user): bool
+{
+    if ($this->role !== 'admin') {
+        return false;
+    }
+
+    if ($this->canManageAllSchools()) {
+        return true;
+    }
+
+    if ($user->canManageAllSchools()) {
+        return false;
+    }
+
+    return $this->school_id !== null && $this->school_id === $user->school_id;
+}
+
+public function scopeVisibleToAdmin(Builder $query, User $admin): Builder
+{
+    if ($admin->canManageAllSchools()) {
+        return $query;
+    }
+
+    return $query
+        ->where('school_id', $admin->school_id ?? 0)
+        ->where('can_manage_all_schools', false);
 }
 
 public function schoolClass()
@@ -126,6 +166,8 @@ public function promotions()
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'school_id' => 'integer',
+            'can_manage_all_schools' => 'boolean',
         ];
     }
 }

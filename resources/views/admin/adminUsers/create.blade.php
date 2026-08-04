@@ -81,6 +81,15 @@
                         <label>Role</label>
                         <input type="text" value="Administrator" disabled>
                     </div>
+                    @if($currentAdmin->canManageAllSchools())
+                        <div class="field permission-field">
+                            <label for="can_manage_all_schools">Cross-school permission</label>
+                            <label class="permission-check">
+                                <input type="checkbox" id="can_manage_all_schools" name="can_manage_all_schools" value="1" @checked(old('can_manage_all_schools'))>
+                                Allow this admin to manage users in all schools
+                            </label>
+                        </div>
+                    @endif
                 </div>
 
                 <div class="form-actions">
@@ -121,6 +130,9 @@
     box-shadow: 0 0 0 3px rgba(18, 61, 53, 0.12);
     outline: 0;
 }
+.permission-field { grid-column: span 2; }
+.permission-check { align-items: center; display: flex !important; font-weight: 600 !important; gap: 9px; min-height: 38px; }
+.permission-check input { height: 18px; width: 18px; }
 .password-field { position: relative; }
 .password-field input { padding-right: 42px; }
 .password-field button {

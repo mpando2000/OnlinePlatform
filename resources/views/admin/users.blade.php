@@ -7,7 +7,13 @@
         <div class="users-header">
             <div>
                 <h1 class="users-title"><i class="fas fa-users"></i> User Management</h1>
-                <p class="users-subtitle">Manage accounts, roles, status, schools, and classes.</p>
+                <p class="users-subtitle">
+                    @if($currentAdmin->canManageAllSchools())
+                        Managing users across all schools.
+                    @else
+                        Managing users for {{ optional($currentAdmin->schoolRelation)->name ?? 'your assigned school' }}.
+                    @endif
+                </p>
             </div>
             <div class="users-actions">
                 <a href="/addUser" class="users-btn users-btn-primary"><i class="fas fa-user-plus"></i> Add User</a>
@@ -67,7 +73,7 @@
             <div class="filter-field">
                 <label for="school-filter">School</label>
                 <select id="school-filter">
-                    <option value="">All Schools</option>
+                    <option value="">{{ $currentAdmin->canManageAllSchools() ? 'All Schools' : 'My School' }}</option>
                     @foreach($schools as $school)
                         <option value="{{ $school->name }}">{{ $school->name }}</option>
                     @endforeach
@@ -98,7 +104,7 @@
                     <tbody>
                         @forelse ($users as $user)
                             @php
-                                $schoolName = $user->school_id ? optional($user->school_relation)->name : ucfirst($user->school ?? 'No School');
+                                $schoolName = $user->school_id ? optional($user->schoolRelation)->name : ucfirst($user->school ?? 'No School');
                                 $className = optional($user->schoolClass)->name ?: 'Not assigned';
                             @endphp
                             <tr class="user-row"
@@ -130,6 +136,9 @@
                                 </td>
                                 <td data-label="Role">
                                     <span class="role-pill role-{{ $user->role }}">{{ ucfirst($user->role) }}</span>
+                                    @if($user->role === 'admin' && $user->canManageAllSchools())
+                                        <small>All-school access</small>
+                                    @endif
                                 </td>
                                 <td data-label="Status">
                                     <span class="status-pill status-{{ $user->status }}">{{ ucfirst($user->status) }}</span>

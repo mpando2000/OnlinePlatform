@@ -18,6 +18,7 @@ use App\Http\Controllers\SchoolClassController;
 use App\Http\Controllers\OnlineSessionController;
 use App\Http\Controllers\SliderController;
 use App\Http\Controllers\StudentPromotionController;
+use App\Http\Controllers\ProfileController;
 
 // search
 Route::get('/search', [SearchController::class, 'search'])->name('search');
@@ -55,6 +56,12 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
 Route::post('/logout', [AuthController::class,'logout'])->name('logout');
 Route::post('/fetch-subjects', [AuthController::class, 'fetchSubjects'])->name('fetch.subjects');
 
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+});
+
 
 
 Route::middleware(['auth','role:admin'])->group(function (){
@@ -72,7 +79,7 @@ Route::middleware(['auth','role:admin'])->group(function (){
 
     // route status
     Route::post('/admin/users/{user}/status', [AdminController::class, 'updateUserStatus'])->name('admin.users.updateStatus');
-    Route::patch('/admin/users/{user}/status', [AuthController::class, 'updateStatus'])->name('admin.updateStatus');
+    Route::patch('/admin/users/{user}/status', [AdminController::class, 'updateUserStatus'])->name('admin.updateStatus');
 
     // reset password
     Route::get('/admin/reset-password/{user}', [AdminController::class, 'resetPassword'])->name('admin.resetPassword');
