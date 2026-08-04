@@ -55,6 +55,19 @@
 <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.8/index.global.min.js'></script>
 <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@6.1.8/index.global.min.js'></script>
 
+<script>
+(function () {
+    try {
+        if (localStorage.getItem('elearning-theme') === 'dark') {
+            document.documentElement.classList.add('theme-dark');
+        }
+    } catch (error) {
+        // The light theme remains the safe default when storage is unavailable.
+    }
+})();
+</script>
+@include('components.theme-styles')
+
 
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">

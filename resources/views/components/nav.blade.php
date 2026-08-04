@@ -35,6 +35,14 @@
   
 
       <li class="nav-item">
+        <button type="button" class="nav-link theme-toggle" id="theme-toggle" aria-label="Switch to dark theme" aria-pressed="false" title="Switch to dark theme">
+          <i class="fas fa-moon theme-icon-moon" aria-hidden="true"></i>
+          <i class="fas fa-sun theme-icon-sun" aria-hidden="true"></i>
+          <span class="theme-toggle-label">Dark theme</span>
+        </button>
+      </li>
+
+      <li class="nav-item">
         <a class="nav-link" data-widget="fullscreen" href="#" role="button">
           <i class="fas fa-expand-arrows-alt"></i>
         </a>
@@ -49,3 +57,33 @@
       </li>
     </ul>
 </nav>
+
+<script>
+(function () {
+    const toggle = document.getElementById('theme-toggle');
+    if (!toggle) return;
+
+    const label = toggle.querySelector('.theme-toggle-label');
+
+    function syncThemeControl() {
+        const darkMode = document.documentElement.classList.contains('theme-dark');
+        const action = darkMode ? 'light' : 'dark';
+        toggle.setAttribute('aria-pressed', darkMode ? 'true' : 'false');
+        toggle.setAttribute('aria-label', 'Switch to ' + action + ' theme');
+        toggle.setAttribute('title', 'Switch to ' + action + ' theme');
+        if (label) label.textContent = darkMode ? 'Light theme' : 'Dark theme';
+    }
+
+    toggle.addEventListener('click', function () {
+        const darkMode = document.documentElement.classList.toggle('theme-dark');
+        try {
+            localStorage.setItem('elearning-theme', darkMode ? 'dark' : 'light');
+        } catch (error) {
+            // The theme still works for this page even without browser storage.
+        }
+        syncThemeControl();
+    });
+
+    syncThemeControl();
+})();
+</script>
